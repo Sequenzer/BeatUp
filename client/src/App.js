@@ -1,22 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import StyledNavbar from "./Components/Navbar";
 import StyledFooter from "./Components/Footer";
 import StyledContent from "./Components/Content";
 import Bungee from "./assets/Bungee-Regular.ttf";
 import Roboto from "./assets/Roboto-Regular.ttf";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const theme = {
-  primary: "#F3EBE9",
-  secondary: "#CAA892",
-  secDark: "#7B707A",
+  primary: "#C4C4C4",
+  secondary: "#F3EBE9",
+  secDark: "#5A4141",
   white: "#fffff4",
+  green: "#2F6A3A",
   textFont: "roboto,sans-seriff",
   titleFont: "bungee,sans-seriff",
-  navheight: "3.5rem",
+  navheight: "3rem",
   footheight: "10vh",
-  boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+  boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.75);",
 };
 const GlobalStyle = createGlobalStyle`
 @font-face {
@@ -35,17 +36,25 @@ const GlobalStyle = createGlobalStyle`
   }
 body {
     background-color: ${(props) => props.theme.white};
+    margin:0;
     
+  }
+  #root{
+    display: grid;
+    grid-template-rows: ${(props) =>
+      "1.5rem " + props.theme.navheight + " 80vh " + props.theme.footheight};
   }
 `;
 
 function App() {
+  const [bg_shown, setBg] = useState(true);
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <GlobalStyle />
-        <StyledNavbar />
-        <StyledContent />
+        <StyledNavbar setBg={setBg} bg_shown={bg_shown} />
+        <StyledContent bg_shown={bg_shown} />
         <StyledFooter />
       </Router>
     </ThemeProvider>

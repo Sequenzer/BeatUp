@@ -2,11 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import { ReactComponent as ChessLogo } from "../assets/chess-figure.svg";
+import { ReactComponent as ChessLogo } from "../assets/board-figure.svg";
 
 const StyledLink = styled(Link)`
   color: inherit;
   text-decoration: inherit;
+  font-family: ${(props) => props.theme.titleFont}, sans-serif;
 
   &:focus,
   &:hover,
@@ -15,26 +16,23 @@ const StyledLink = styled(Link)`
   &:active {
     text-decoration: none;
   }
+  user-select: none;
 `;
 
 const StyledNavbar = styled(Navbar)`
   background-color: ${(props) => props.theme.white};
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: ${(props) => props.theme.navheight};
+  grid-row: 2/3;
+  grid-column: 1/3;
   width: 100%;
   display: flex;
-  .nNavbar {
-    display: flex;
-    padding: 0px 1.3vw;
-    justify-content: space-between;
-    align-items: center;
-    width: 100vw;
-  }
+  padding: 0px 1.3vw;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  box-sizing: border-box;
   .left {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
   }
   .navLinks {
@@ -44,8 +42,11 @@ const StyledNavbar = styled(Navbar)`
     margin-right: 1.5vw;
   }
   .icon {
-    width: 2rem;
-    height: 2rem;
+    width: auto;
+    height: 50px;
+  }
+  .homebtn {
+    margin-left: -0.4em;
   }
   .right {
     display: flex;
@@ -53,62 +54,106 @@ const StyledNavbar = styled(Navbar)`
     justify-content: flex-end;
   }
   .logoBlock {
-    background: white;
+    background: ${(props) => props.theme.primary};
     margin-right: 2vw;
-    height: 2.5rem;
+    height: 3rem;
+    line-height: 1rem;
     padding: 0 5px 0 0;
     display: flex;
     align-items: center;
     border-radius: 0.7rem 0.1rem;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.2),
+      0px 4px 4px rgba(0, 0, 0, 0.15), 0px 8px 8px rgba(0, 0, 0, 0.1),
+      0px 16px 16px rgba(0, 0, 0, 0.05);
     :hover {
+      background-color: ${(props) => props.theme.secondary};
       cursor: pointer;
     }
-  }
-  .logoText {
+    :active {
+      box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.15),
+        inset 0px 2px 2px rgba(0, 0, 0, 0.2),
+        inset 0px 1px 1px rgba(0, 0, 0, 0.25);
+    }
   }
 `;
 
 const StyledItem = styled(Item)`
   font-family: ${(props) => props.theme.titleFont};
+  background-color: ${(props) => props.theme.primary};
   flex: 0 0 auto;
   margin-right: 1.5vw;
-  font-family: ${(props) => props.theme.titleFont}, sans-serif;
-  border-radius: 0.7rem 0.1rem;
-  padding: 0 0.2rem;
+  height: 1.5rem;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.2),
+    0px 4px 4px rgba(0, 0, 0, 0.15), 0px 8px 8px rgba(0, 0, 0, 0.1),
+    0px 16px 16px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  padding: 0 0.8em;
+  border-radius: 0.7rem 0;
   :hover {
-    background-color: ${(props) => props.theme.primary};
+    background-color: ${(props) => props.theme.secondary};
     cursor: pointer;
-    box-shadow: ${(props) => props.theme.boxShadow};
+  }
+  :active {
+    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.15),
+      inset 0px 2px 2px rgba(0, 0, 0, 0.2),
+      inset 0px 1px 1px rgba(0, 0, 0, 0.25);
   }
 `;
 
 function Navbar(props) {
   return (
     <div className={props.className}>
-      <div className="nNavbar">
-        <div className="left">
-          <div className="logoBlock">
-            <ChessLogo className="icon" href="/" />
-            <div className="logoText">
-              <StyledLink to="/">Home</StyledLink>
-            </div>
-          </div>
-          <div className="navLinks">
-            {Array(5)
-              .fill(1)
-              .map((el, i) => (
-                <StyledItem key={i} number={i} content={"Hello"} />
-              ))}
-          </div>
+      <div className="left">
+        <div className="logoBlock">
+          <ChessLogo className="icon" href="/" />
+          <StyledLink
+            className="homebtn"
+            to="/"
+            onClick={() => {
+              props.setBg(true);
+            }}
+          >
+            Beat <br /> Up
+          </StyledLink>
         </div>
-        <div className="right">
-          {Array(3)
+        <div className="navLinks">
+          <StyledItem
+            content={"TicTacToe"}
+            to="/TTT"
+            fullpage={true}
+            bg_shown={props.bg_shown}
+            setBg={props.setBg}
+          />
+          {Array(5)
             .fill(1)
             .map((el, i) => (
-              <StyledItem key={i} number={i} content={"End"} />
+              <StyledItem
+                key={i}
+                number={i}
+                content={"Liar"}
+                to="/liar"
+                fullpage={true}
+                bg_shown={props.bg_shown}
+                setBg={props.setBg}
+              />
             ))}
         </div>
+      </div>
+      <div className="right">
+        {Array(3)
+          .fill(1)
+          .map((el, i) => (
+            <StyledItem
+              key={i}
+              number={i}
+              content={"End"}
+              to="/"
+              fullpage={true}
+              bg_shown={props.bg_shown}
+              setBg={props.setBg}
+            />
+          ))}
       </div>
     </div>
   );
@@ -117,7 +162,11 @@ function Navbar(props) {
 function Item(props) {
   return (
     <div className={props.className}>
-      <StyledLink to="/about" style={{ textDecoration: "none" }}>
+      <StyledLink
+        to={props.to}
+        style={{ textDecoration: "none" }}
+        onClick={() => props.setBg(!props.fullpage)}
+      >
         {props.content}
       </StyledLink>
     </div>
