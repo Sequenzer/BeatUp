@@ -53,7 +53,6 @@ function IsDraw(cells) {
 const TicTacToeGame = Client({
   game: TicTacToe,
   board: StyledTicTacToeUI,
-  debug: false,
 });
 
 export default TicTacToeGame;
