@@ -5,7 +5,7 @@ import StyledFooter from "./Components/Footer";
 import StyledContent from "./Components/Content";
 import Bungee from "./assets/Bungee-Regular.ttf";
 import Roboto from "./assets/Roboto-Regular.ttf";
-import { BrowserRouter as Router } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const theme = {
   primary: "#C4C4C4",
@@ -13,6 +13,7 @@ const theme = {
   secDark: "#5A4141",
   white: "#fffff4",
   green: "#2F6A3A",
+  blue: "#A2DBFA",
   textFont: "roboto,sans-seriff",
   titleFont: "bungee,sans-seriff",
   navheight: "3rem",
@@ -47,16 +48,15 @@ body {
 `;
 
 function App() {
-  const [bg_shown, setBg] = useState(true);
+  var location = useLocation().pathname;
+  const [bg_shown, setBg] = useState(location == "/");
 
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <GlobalStyle />
-        <StyledNavbar setBg={setBg} bg_shown={bg_shown} />
-        <StyledContent bg_shown={bg_shown} />
-        <StyledFooter />
-      </Router>
+      <GlobalStyle />
+      <StyledNavbar setBg={setBg} bg_shown={bg_shown} />
+      <StyledContent bg_shown={bg_shown} setBg={setBg} />
+      <StyledFooter />
     </ThemeProvider>
   );
 }

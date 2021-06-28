@@ -49,6 +49,7 @@ const LiarGame = Client({
   game: Liar,
   numPlayers: 2,
   board: StyledLiarUI,
+  debug: false,
 });
 
 export default LiarGame;
