@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, createContext } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import styled from "styled-components";
 import StyledHand from "../assets/playingcards/Hand";
 import StyledCard from "../assets/playingcards/Card";
@@ -12,6 +12,7 @@ function LiarUI(props) {
   const [staged, setstaged] = useState([]);
   const [draghand, setdraghand] = useState(hand);
   const [dragging, setDragging] = useState("false");
+  const [barwidth, setwidth] = useState(undefined);
   var dragItem = useRef();
   var dragNode = useRef();
 
@@ -26,7 +27,6 @@ function LiarUI(props) {
   const handleDragEnd = (ev) => {
     setDragging(false);
     sethand(draghand);
-
     dragNode.current.removeEventListener("dragend", handleDragEnd);
     dragItem.current = null;
     dragNode.current = null;
@@ -43,7 +43,7 @@ function LiarUI(props) {
       console.log("Entered new Handcard");
       //Put card into target position and
       setdraghand((oldhand) => {
-        var newhand = oldhand;
+        var newhand = [...oldhand];
         newhand.splice(
           params.pos,
           0,
@@ -85,7 +85,7 @@ function LiarUI(props) {
     }
   }, [suit]);
   useEffect(() => {
-    console.log(hand);
+    //console.log(hand);
   }, [hand]);
   function playCardButton() {
     if (staged.length == 0) {
@@ -104,6 +104,14 @@ function LiarUI(props) {
     setstaged([]);
   }
 
+  //Size Cards
+  //const actionbar = useRef();
+  useEffect(() => {
+    if (barwidth) {
+      console.log(barwidth.slice(0, -2));
+    }
+  }, [barwidth]);
+
   return (
     <div className={props.className}>
       <StyledFrameWork
@@ -118,6 +126,7 @@ function LiarUI(props) {
         setsuit={setsuit}
       />
       <StyledActionBar
+        setwidth={setwidth}
         gameprops={props}
         sethand={sethand}
         playCardButton={playCardButton}
@@ -129,7 +138,11 @@ function LiarUI(props) {
               key={i}
               id={card}
               pos={i}
+              barwidth={barwidth}
+              handsize={hand.length}
               staged={staged}
+              cardwidth={130}
+              offset={60}
               handleDragEnter={handleDragEnter}
               handleDragstart={handleDragstart}
               handleDragEnd={handleDragEnd}
@@ -456,43 +469,56 @@ const StyledButtonBox = styled(ButtonBox)`
   align-items: center;
   flex-direction: column;
 `;
-const HandArea = (props) => (
-  <div className={props.className}>{props.children}</div>
-);
+const HandArea = (props) => {
+  return <div className={props.className}>{props.children}</div>;
+};
 const StyledHandArea = styled(HandArea)`
   height: 8em;
   width: 50vw;
   background-color: ${(props) => props.theme.green};
   display: flex;
   justify-content: space-around;
+  position: relative;
 `;
-const ActionBar = (props) => (
-  <div className={props.className}>
-    <StyledButtonBox position="left">
-      <StyledButton
-        color="secDark"
-        onClick={() => {
-          props.gameprops.moves.drawCard();
-          props.sethand(props.gameprops.G.hand[0]);
-        }}
-      >
-        Draw
-      </StyledButton>
-      <StyledButton color="secDark">Aktion</StyledButton>
-      <StyledButton color="secDark" onClick={() => props.playCardButton()}>
-        Play Cards
-      </StyledButton>
-    </StyledButtonBox>
-    <StyledHandArea>{props.children}</StyledHandArea>
-    <StyledButtonBox position="right">
-      <StyledButton color="secDark">Aktion</StyledButton>
-      <StyledButton color="secDark">Aktion</StyledButton>
-      <StyledButton color="secDark" onClick={() => props.callOut()}>
-        Call
-      </StyledButton>
-    </StyledButtonBox>
-  </div>
-);
+const ActionBar = (props) => {
+  const barRef = useRef();
+  useLayoutEffect(() => {
+    if (barRef.current) {
+      props.setwidth(
+        window.getComputedStyle(barRef.current.childNodes[1]).width
+      );
+    }
+  });
+  return (
+    <div className={props.className} ref={barRef}>
+      <StyledButtonBox position="left">
+        <StyledButton
+          color="secDark"
+          onClick={() => {
+            props.gameprops.moves.drawCard();
+            props.sethand(props.gameprops.G.hand[0]);
+          }}
+        >
+          Draw
+        </StyledButton>
+        <StyledButton color="secDark">Aktion</StyledButton>
+        <StyledButton color="secDark" onClick={() => props.playCardButton()}>
+          Play Cards
+        </StyledButton>
+      </StyledButtonBox>
+      <StyledHandArea forwardedRef={props.actionbar}>
+        {props.children}
+      </StyledHandArea>
+      <StyledButtonBox position="right">
+        <StyledButton color="secDark">Aktion</StyledButton>
+        <StyledButton color="secDark">Aktion</StyledButton>
+        <StyledButton color="secDark" onClick={() => props.callOut()}>
+          Call
+        </StyledButton>
+      </StyledButtonBox>
+    </div>
+  );
+};
 const StyledActionBar = styled(ActionBar)`
   display: flex;
   justify-content: center;

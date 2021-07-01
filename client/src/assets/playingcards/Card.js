@@ -53,11 +53,23 @@ function Card(props) {
 const StyledCard = styled(Card)`
   height: auto;
   margin-top: ${(props) => (props.dummy ? 0 : "-5em")};
-  width: 8em;
+  position: absolute;
+  left: ${(props) => {
+    if (props.barwidth) {
+      var barwidth = parseInt(props.barwidth.slice(0, -2)) - 20;
+      var offset = (barwidth - props.cardwidth) / (props.handsize - 1);
+    }
+    var left = offset * props.pos;
+    if (isNaN(left)) {
+      return (barwidth - props.cardwidth) / 2 + "px";
+    }
+    return 10 + left + "px";
+  }};
+  width: 130px;
   border-radius: 10px;
   border-style: ${(props) =>
     props.staged.indexOf(props.pos) !== -1 ? "solid" : "none"};
-  transform: ${(props) => "translateX(" + props.offset + "%)"};
+
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 `;
 
