@@ -17,7 +17,7 @@ const theme = {
   textFont: "roboto,sans-seriff",
   titleFont: "bungee,sans-seriff",
   navheight: "3rem",
-  footheight: "10vh",
+  footheight: "1fr",
   boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.75);",
 };
 const GlobalStyle = createGlobalStyle`
@@ -42,8 +42,9 @@ body {
   }
   #root{
     display: grid;
+    height:100vh;
     grid-template-rows: ${(props) =>
-      "1.5rem " + props.theme.navheight + " 80vh " + props.theme.footheight};
+      "1.5rem " + props.theme.navheight + " 8fr " + props.theme.footheight};
   }
 `;
 
