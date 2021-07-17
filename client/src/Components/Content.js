@@ -10,6 +10,7 @@ import StyledLobbyScreen from "./Lobby.js";
 
 const StyledContent = styled(ContentPage)`
   display: grid;
+  min-height: 0;
   grid-template-columns: 3% auto auto 3%;
   grid-template-rows: 50% 50%;
   grid-row: 3/4;

@@ -35,10 +35,12 @@ const StyledLobbyScreen = styled(LobbyScreen)`
   grid-column: 2/4;
   display: grid;
   grid-template-rows: 2fr 5fr 2fr;
+  min-height: 0;
   grid-template-columns: 3fr 2fr 0.25fr 2fr 3fr;
   .settings,
   .gamelog {
     grid-row: 2/3;
+    min-height: 0;
   }
   .settings {
     grid-column: 2/3;

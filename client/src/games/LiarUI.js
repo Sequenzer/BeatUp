@@ -4,7 +4,10 @@ import StyledHand from "../assets/playingcards/Hand";
 import StyledCard from "../assets/playingcards/Card";
 import { io } from "socket.io-client";
 
-import { StyledBtn as Button } from "../Components/Basic-Components";
+import {
+  StyledBtn as Button,
+  StyledHeader as Header,
+} from "../Components/Basic-Components";
 
 var temphand = ["Club1", "Diamond2", "Heart3", "Heart1"];
 
@@ -193,25 +196,10 @@ const StyledLiarUI = styled(LiarUI)`
   flex-direction: column;
   justify-content: space-between;
 `;
-
-const Header = (props) => (
-  <div className={props.className}>{props.children}</div>
-);
-const StyledHeader = styled(Header)`
-  background-color: ${(props) => props.theme.secDark};
-  text-align: center;
-  vertical-align: middle;
-  color: white;
-  font-family: ${(props) => props.theme.titleFont};
-  font-size: 1.5em;
-  display: table-cell;
-  grid-row: 1/2;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-`;
 function Settings(props) {
   return (
     <div className={props.className}>
-      <StyledHeader>Settings</StyledHeader>
+      <Header>Settings</Header>
       <ul>
         <li className="restart">
           <Button
@@ -341,42 +329,93 @@ const StyledSettings = styled(Settings)`
   }
 `;
 const LogBlock = (props) => (
-  <div className={props.className}>
+  <li className={props.className}>
     <div className="author">{`${props.author}: `}</div>
     <p className="content">{props.children}</p>
-  </div>
+  </li>
 );
 const StyledLogBlock = styled(LogBlock)`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   font-family: ${(props) => props.theme.textFont};
   font-size: 0.8em;
-  padding: 0 0.6em;
-  background-color: ${(props) => props.theme.blue};
-  border-radius: 0.2em;
-  width: 80%;
+  background-color: ${(props) =>
+    props.isSelf ? props.theme.chatblue : props.theme.chatgreen};
+  border-radius: ${(props) =>
+    props.isSelf ? " 0.4em 0 0.4em 0.4em" : "0 0.4em 0.4em 0.4em"};
+  max-width: 70%;
   margin-bottom: 0.2em;
+  margin-left: 1em;
+  margin-right: 1em;
 
+  .content,
   .author {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .content {
+    font-family: ${(props) => props.theme.textFont};
+    margin: 0.4em;
     display: block;
     word-wrap: break-word;
-    text-align: right;
+    text-align: left;
     overflow-wrap: break-word;
+    word-break: break-word;
   }
+  .author {
+    display: ${(props) => (props.isSelf ? "none" : "block")};
+    font-size: 90%;
+    margin-bottom: 0;
+  }
+  align-self: ${(props) => (props.isSelf ? "flex-end" : "flex-start")};
 `;
+
+//How?
+function useOnScreen(ref) {
+  const [isIntersecting, setIntersecting] = useState(false);
+
+  const observer = new IntersectionObserver(([entry]) =>
+    setIntersecting(entry.isIntersecting)
+  );
+
+  useEffect(() => {
+    observer.observe(ref.current);
+    // Remove the observer as soon as the component is unmounted
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return isIntersecting;
+}
+
 const GameLog = (props) => {
   const [chatLog, setChatLog] = useState([]);
+  //const [member, setMember] = useState(["Horst","Peter"]);
+  const [name, setName] = useState("Horst");
+  const [test, setTest] = useState(false);
 
   const inputRef = useRef(null);
+  const chatEndRef = useRef(null);
+  // var scrolledDown = useOnScreen(chatEndRef);
+
+  function scrollToBottom() {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
+  useEffect(() => {
+    //if (scrolledDown) {
+    scrollToBottom();
+    //}
+  }, [chatLog]);
 
   function handleSubmit(ev) {
     console.log("submit", inputRef.current.value);
-    pushMessage("Horst", inputRef.current.value);
+    if (inputRef.current.value !== "") {
+      if (test) {
+        pushMessage("Horst", inputRef.current.value);
+        setTest(!test);
+      } else {
+        pushMessage("Peter", inputRef.current.value);
+        setTest(!test);
+      }
+    }
     inputRef.current.value = "";
     ev.preventDefault();
   }
@@ -385,16 +424,21 @@ const GameLog = (props) => {
   }
   return (
     <div className={props.className}>
-      <StyledHeader>Gamelog</StyledHeader>
-      <div className="log">
+      <Header>Gamelog</Header>
+      <ul className="log">
         {chatLog.map((ele, i) => (
-          <StyledLogBlock key={i} author={ele.author}>
+          <StyledLogBlock
+            key={i}
+            author={ele.author}
+            isSelf={name === ele.author}
+          >
             {ele.value}
           </StyledLogBlock>
         ))}
-      </div>
+        <li ref={chatEndRef} />
+      </ul>
       <form className="ipt-frm" onSubmit={(ev) => handleSubmit(ev)}>
-        <input type="text" ref={inputRef}></input>
+        <input type="text" ref={inputRef} placeholder={"Put it in!"}></input>
       </form>
     </div>
   );
@@ -430,14 +474,17 @@ const StyledGameLog = styled(GameLog)`
       width: 0.5em;
     }
     ::-webkit-scrollbar-track {
-      background-color: ${(props) => props.theme.blue};
     }
     ::-webkit-scrollbar-thumb {
+      border-radius: 5px;
       background: ${(props) => props.theme.secDark};
     }
     ::-webkit-scrollbar-thumb:hover {
       background: ${(props) => props.theme.secLight};
     }
+  }
+  .log li:first-child {
+    margin-top: 0.5em;
   }
   .ipt-frm {
     grid-row: 3/4;
@@ -600,6 +647,7 @@ const StyledFrameWork = styled(FrameWork)`
   height: 50vh;
   background: ${(props) => props.theme.green};
   display: grid;
+  grid-template-rows: 100%;
   grid-template-columns: 7.5vw 7.5vw 7.5vw auto 7.5vw 7.5vw 7.5vw;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25),
     0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25),

@@ -15,6 +15,8 @@ const theme = {
   white: "#fffff4",
   green: "#05381E",
   blue: "#A2DBFA",
+  chatgreen: "#7cc88d",
+  chatblue: "#9AAAE6",
 
   textFont: "roboto,sans-seriff",
   titleFont: "bungee,sans-seriff",
