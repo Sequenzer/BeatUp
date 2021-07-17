@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import Test from "../assets/wide-cafe.jpg";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 import TicTacToeGame from "../games/TicTacToe.js";
 import Liar from "../games/Liar.js";
+import StyledNewGame from "../Components/NewGame.js";
+import InternationalGame from "../games/International.js";
+import StyledLobbyScreen from "./Lobby.js";
 
 const StyledContent = styled(ContentPage)`
   display: grid;
@@ -59,6 +62,7 @@ const StyledEmptyPage = styled(EmptyPage)`
 `;
 
 function ContentPage(props) {
+  let { path, url } = useRouteMatch();
   return (
     <div className={props.className}>
       <div className="bg-img"></div>
@@ -74,6 +78,23 @@ function ContentPage(props) {
         </Route>
         <Route path="/liar">
           <Liar />
+        </Route>
+        <Route path="/createLobby">
+          <StyledNewGame
+            bg_shown={props.bg_shown}
+            setBg={props.setBg}
+            fullpage={true}
+          />
+        </Route>
+        <Route path={`/:LobbyID/Lobby`}>
+          <StyledLobbyScreen
+            bg_shown={props.bg_shown}
+            setBg={props.setBg}
+            fullpage={true}
+          />
+        </Route>
+        <Route path="/International">
+          <InternationalGame />
         </Route>
       </Switch>
     </div>

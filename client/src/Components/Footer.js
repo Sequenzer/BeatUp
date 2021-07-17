@@ -10,7 +10,7 @@ const StyledFooter = styled(Footer)`
   display: grid;
   grid-template-columns: 12.5% 25% 25% 25% 12.5%;
   a {
-    color: black;
+    color: white;
     text-decoration: none;
     font-family: ${(props) => props.theme.textFont};
   }

@@ -2,35 +2,67 @@ import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import styled from "styled-components";
 import StyledHand from "../assets/playingcards/Hand";
 import StyledCard from "../assets/playingcards/Card";
+import { io } from "socket.io-client";
+
+import { StyledBtn as Button } from "../Components/Basic-Components";
 
 var temphand = ["Club1", "Diamond2", "Heart3", "Heart1"];
 
 function LiarUI(props) {
   const [hand, sethand] = useState(props.G.hand[props.ctx.currentPlayer]);
   const [showPopup, setPopup] = useState(false);
-  const [suit, setsuit] = useState(undefined);
+  const [value, setvalue] = useState(undefined);
   const [staged, setstaged] = useState([]);
-  const [draghand, setdraghand] = useState(hand);
-  const [dragging, setDragging] = useState("false");
+  const [dragging, setDragging] = useState(false);
   const [barwidth, setwidth] = useState(undefined);
+  const [selectedOption, setSelected] = useState(undefined);
+  var elementToDrag = useRef(null);
   var dragItem = useRef();
   var dragNode = useRef();
 
+  const handleOptionClick = (ev, params) => {
+    if (selectedOption == params.value) {
+      setSelected(undefined);
+    } else {
+      setSelected(params.value);
+    }
+  };
   //Drag Effect
   const handleDragstart = (event, params) => {
     console.log("Drag starting");
     dragItem.current = params;
+    elementToDrag.current = params;
     dragNode.current = event.target;
     dragNode.current.addEventListener("dragend", handleDragEnd);
     setDragging(true);
   };
+
+  function getNumberOfCard(card) {
+    var r = /\d+/;
+    return parseInt(card.match(r)[0]);
+  }
+
   const handleDragEnd = (ev) => {
     setDragging(false);
-    sethand(draghand);
+    console.log("Drag ended", dragItem.current, elementToDrag.current);
+    if (dragItem.current.id == "stack") {
+      console.log("dragged to stack", elementToDrag.current);
+      if (props.G.lastValue !== undefined) {
+        props.moves.playCard({ ids: [elementToDrag.current.pos] });
+      } else {
+        var lastvalue = getNumberOfCard(elementToDrag.current.card);
+        props.moves.playCard({
+          ids: [elementToDrag.current.pos],
+          value: lastvalue,
+        });
+        setvalue(lastvalue);
+      }
+      var nextplayer = (props.ctx.playOrderPos + 1) % props.ctx.numPlayers;
+      sethand(props.G.hand[nextplayer]);
+    }
     dragNode.current.removeEventListener("dragend", handleDragEnd);
     dragItem.current = null;
     dragNode.current = null;
-    console.log("Drag ended");
   };
 
   function handleDragEnter(ev, params) {
@@ -41,23 +73,19 @@ function LiarUI(props) {
     ) {
       ev.target.style.cursor = "pointer";
       console.log("Entered new Handcard");
-      //Put card into target position and
-      setdraghand((oldhand) => {
-        var newhand = [...oldhand];
-        newhand.splice(
-          params.pos,
-          0,
-          newhand.splice(dragItem.current.pos, 1)[0]
-        );
-        dragItem.current = params;
-        return newhand;
-      });
+      dragItem.current = params;
     } else if (params.id == "stack") {
       console.log("Stack entered");
       dragItem.current = params;
+    } else if (params.id == "board") {
+      console.log("Board entered");
+      dragItem.current = params;
     }
+    ev.stopPropagation();
   }
   function handleDragLeave(ev, params) {
+    console.log("Leaving");
+
     //Do nothing
   }
   function handleCardClick(ev, params) {
@@ -79,29 +107,27 @@ function LiarUI(props) {
     if (showPopup == true) {
       var nextplayer = (props.ctx.playOrderPos + 1) % props.ctx.numPlayers;
       setPopup(false);
-      var params = { ids: staged, suit: suit };
+      var params = { ids: staged, value: value };
       props.moves.playCard(params);
       sethand(props.G.hand[nextplayer]);
+      setstaged([]);
     }
-  }, [suit]);
-  useEffect(() => {
-    //console.log(hand);
-  }, [hand]);
+  }, [value]);
   function playCardButton() {
     if (staged.length == 0) {
       console.log("You have to select Cards to Play");
     } else {
-      if (props.G.lastSuit == undefined) {
+      if (props.G.lastValue == undefined) {
         console.log("You have to name a Suit");
         setPopup(true);
       } else {
         var nextplayer = (props.ctx.playOrderPos + 1) % props.ctx.numPlayers;
-        var params = { ids: staged, suit: "Diamond" };
+        var params = { ids: staged };
         props.moves.playCard(params);
         sethand(props.G.hand[nextplayer]);
+        setstaged([]);
       }
     }
-    setstaged([]);
   }
 
   //Size Cards
@@ -116,6 +142,8 @@ function LiarUI(props) {
     <div className={props.className}>
       <StyledFrameWork
         gameprops={props}
+        selectedOption={selectedOption}
+        handleOptionClick={handleOptionClick}
         handleDragEnter={handleDragEnter}
         handleDragstart={handleDragstart}
         handleDragEnd={handleDragEnd}
@@ -123,7 +151,8 @@ function LiarUI(props) {
         stack={props.G.stack}
         showPopup={showPopup}
         lastSuit={props.G.lastSuit}
-        setsuit={setsuit}
+        setvalue={setvalue}
+        value={value}
       />
       <StyledActionBar
         setwidth={setwidth}
@@ -179,63 +208,73 @@ const StyledHeader = styled(Header)`
   grid-row: 1/2;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 `;
-const Button = (props) => (
-  <div className={props.className} onClick={props.onClick}>
-    <nobr>{props.children}</nobr>
-  </div>
-);
-const StyledButton = styled(Button)`
-  color: ${(props) => (props.color == "secDark" ? props.theme.white : "black")};
-  background-color: ${(props) => props.theme[props.color]};
-  font-family: ${(props) => props.theme.textFont};
-  font-size: 1.5em;
-  line-height: 21px;
-  width: 60%;
-  user-select: none;
-  padding: 0.2em 0.8em;
-  vertical-align: middle;
-  text-align: center;
-  border-radius: 2px;
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.2),
-    0px 4px 4px rgba(0, 0, 0, 0.15), 0px 8px 8px rgba(0, 0, 0, 0.1),
-    0px 16px 16px rgba(0, 0, 0, 0.05);
-  :hover {
-    background-color: ${(props) => props.theme.secondary};
-    color: black;
-    cursor: pointer;
-  }
-  :active {
-    box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.15),
-      inset 0px 2px 2px rgba(0, 0, 0, 0.2),
-      inset 0px 1px 1px rgba(0, 0, 0, 0.25), 0px 1px 1px rgba(0, 0, 0, 0.25),
-      0px 2px 2px rgba(0, 0, 0, 0.2), 0px 4px 4px rgba(0, 0, 0, 0.15),
-      0px 8px 8px rgba(0, 0, 0, 0.1), 0px 16px 16px rgba(0, 0, 0, 0.05);
-  }
-`;
-const Settings = (props) => (
-  <div className={props.className}>
-    <StyledHeader>Settings</StyledHeader>
-    <ul>
-      <li>
-        <StyledButton
-          color="primary"
-          onClick={(ev) => props.gameprops.moves.drawCard()}
-        >
-          Restart
-        </StyledButton>
-      </li>
-      <li>
-        <StyledButton color="primary">History</StyledButton>
-      </li>
-      <li>
-        <StyledButton color="primary">Options</StyledButton>
-      </li>
-      <li>
-        <StyledButton color="primary">Give Up!</StyledButton>
-      </li>
-    </ul>
-  </div>
-);
+function Settings(props) {
+  return (
+    <div className={props.className}>
+      <StyledHeader>Settings</StyledHeader>
+      <ul>
+        <li className="restart">
+          <Button
+            active={true}
+            color="primary"
+            onClick={(ev) => props.handleOptionClick(ev, { value: "restart" })}
+          >
+            Restart
+          </Button>
+          {props.selected == "restart" ? (
+            <ul className="ctx-menu">
+              <li className="ctx-item">Horst</li>
+              <li className="ctx-item">Horst</li>
+            </ul>
+          ) : null}
+        </li>
+
+        <li className="history">
+          <Button
+            color="primary"
+            onClick={(ev) => props.handleOptionClick(ev, { value: "history" })}
+          >
+            History
+          </Button>
+          {props.selected == "history" ? (
+            <ul className="ctx-menu">
+              <li className="ctx-item">Horst</li>
+              <li className="ctx-item">Horst</li>
+            </ul>
+          ) : null}
+        </li>
+        <li className="options">
+          <Button
+            color="primary"
+            onClick={(ev) => props.handleOptionClick(ev, { value: "options" })}
+          >
+            Options
+          </Button>
+          {props.selected == "options" ? (
+            <ul className="ctx-menu">
+              <li className="ctx-item">Horst</li>
+              <li className="ctx-item">Horst</li>
+            </ul>
+          ) : null}
+        </li>
+        <li className="giveup">
+          <Button
+            color="primary"
+            onClick={(ev) => props.handleOptionClick(ev, { value: "giveup" })}
+          >
+            Give Up!
+          </Button>
+          {props.selected == "giveup" ? (
+            <ul className="ctx-menu">
+              <li className="ctx-item">Horst</li>
+              <li className="ctx-item">Horst</li>
+            </ul>
+          ) : null}
+        </li>
+      </ul>
+    </div>
+  );
+}
 const StyledSettings = styled(Settings)`
   grid-column: 1/3;
   grid-row: 1/2;
@@ -249,22 +288,61 @@ const StyledSettings = styled(Settings)`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
     background-color: ${(props) => props.theme.secDark};
     list-style: none;
     box-shadow: inset -16px 0px 16px rgba(0, 0, 0, 0.05),
       inset -8px 0px 8px rgba(0, 0, 0, 0.1);
   }
   li {
-    margin-top: 1em;
+    margin-bottom: 1em;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     justify-content: space-around;
+  }
+  li:first-child {
+    margin-top: 1em;
+  }
+  .ctx-menu {
+    margin: 0.3em 0;
+    background-color: ${(props) => props.theme.secLight};
+    width: calc(60% + 2 * 0.8em);
+    box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.2),
+      inset 1px 1px 1px rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
+    align-items: center;
+    flex-grow: 4;
+  }
+  .ctx-item {
+    font-family: ${(props) => props.theme.textFont};
+    margin-top: 0.2em;
+    margin-bottom: 0;
+    background-color: ${(props) => props.theme.blue};
+    width: 90%;
+    border-radius: 2px;
+  }
+  .ctx-item:first-child {
+    margin-top: 0.5em;
+  }
+  //flex-grow: 4;
+  .restart {
+    flex-grow: ${(props) => (props.selected == "restart" ? 4 : "")};
+  }
+  .history {
+    flex-grow: ${(props) => (props.selected == "history" ? 4 : "")};
+  }
+  .options {
+    flex-grow: ${(props) => (props.selected == "options" ? 4 : "")};
+  }
+  .giveup {
+    flex-grow: ${(props) => (props.selected == "giveup" ? 4 : "")};
   }
 `;
 const LogBlock = (props) => (
   <div className={props.className}>
-    <div className="author">Horst:</div>
+    <div className="author">{`${props.author}: `}</div>
     <p className="content">{props.children}</p>
   </div>
 );
@@ -277,38 +355,64 @@ const StyledLogBlock = styled(LogBlock)`
   background-color: ${(props) => props.theme.blue};
   border-radius: 0.2em;
   width: 80%;
+  margin-bottom: 0.2em;
+
   .author {
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .content {
+    display: block;
+    word-wrap: break-word;
+    text-align: right;
+    overflow-wrap: break-word;
   }
 `;
-const GameLog = (props) => (
-  <div className={props.className}>
-    <StyledHeader>Gamelog</StyledHeader>
-    <div className="log">
-      <StyledLogBlock>Hello There</StyledLogBlock>
+const GameLog = (props) => {
+  const [chatLog, setChatLog] = useState([]);
+
+  const inputRef = useRef(null);
+
+  function handleSubmit(ev) {
+    console.log("submit", inputRef.current.value);
+    pushMessage("Horst", inputRef.current.value);
+    inputRef.current.value = "";
+    ev.preventDefault();
+  }
+  function pushMessage(author, value) {
+    setChatLog([...chatLog, { author, value }]);
+  }
+  return (
+    <div className={props.className}>
+      <StyledHeader>Gamelog</StyledHeader>
+      <div className="log">
+        {chatLog.map((ele, i) => (
+          <StyledLogBlock key={i} author={ele.author}>
+            {ele.value}
+          </StyledLogBlock>
+        ))}
+      </div>
+      <form className="ipt-frm" onSubmit={(ev) => handleSubmit(ev)}>
+        <input type="text" ref={inputRef}></input>
+      </form>
     </div>
-    <form className="ipt-frm">
-      <input type="text"></input>
-    </form>
-  </div>
-);
+  );
+};
 const StyledGameLog = styled(GameLog)`
   grid-column: 6/8;
-  height: 100%;
+  grid-row: 1/2;
   background: ${(props) => props.theme.secDark};
   display: grid;
   grid-template-rows: 10% 75% 15%;
   .log {
+    overflow-y: scroll;
     grid-row: 2/3;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
     background-color: ${(props) => props.theme.secondary};
     list-style: none;
@@ -322,6 +426,18 @@ const StyledGameLog = styled(GameLog)`
       inset -4px 0px 4px rgba(0, 0, 0, 0.15),
       inset -8px 0px 8px rgba(0, 0, 0, 0.1),
       inset -16px 0px 16px rgba(0, 0, 0, 0.05);
+    ::-webkit-scrollbar {
+      width: 0.5em;
+    }
+    ::-webkit-scrollbar-track {
+      background-color: ${(props) => props.theme.blue};
+    }
+    ::-webkit-scrollbar-thumb {
+      background: ${(props) => props.theme.secDark};
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: ${(props) => props.theme.secLight};
+    }
   }
   .ipt-frm {
     grid-row: 3/4;
@@ -335,9 +451,9 @@ const StyledGameLog = styled(GameLog)`
     font-size: 0.8em;
     padding: 0.4em;
     border: 0;
-    border-radius: 10px;
+    border-radius: 5px;
     width: 85%;
-    height: 65%;
+    height: 40%;
     box-shadow: inset 0px 16px 16px rgba(0, 0, 0, 0.05),
       inset 0px 8px 8px rgba(0, 0, 0, 0.1),
       inset 0px 4px 4px rgba(0, 0, 0, 0.15),
@@ -349,18 +465,42 @@ const StyledGameLog = styled(GameLog)`
 const Popup = (props) => {
   return (
     <div className={props.className}>
-      <StyledButton color="primary" onClick={() => props.setsuit("Diamond")}>
-        Diamond
-      </StyledButton>
-      <StyledButton color="primary" onClick={() => props.setsuit("Spade")}>
-        Spade
-      </StyledButton>
-      <StyledButton color="primary" onClick={() => props.setsuit("Heart")}>
-        Heart
-      </StyledButton>
-      <StyledButton color="primary" onClick={() => props.setsuit("Club")}>
-        Club
-      </StyledButton>
+      {Array(9)
+        .fill(1)
+        .map((ele, id) => (
+          <Button
+            className="popup-btn"
+            key={id + 2}
+            color="primary"
+            onClick={() => props.setvalue(id + 2)}
+          >
+            {id + 2}
+          </Button>
+        ))}
+      <Button
+        className="popup-btn"
+        key={11}
+        color="primary"
+        onClick={() => props.setvalue(11)}
+      >
+        Jack
+      </Button>
+      <Button
+        className="popup-btn"
+        key={12}
+        color="primary"
+        onClick={() => props.setvalue(12)}
+      >
+        Queen
+      </Button>
+      <Button
+        className="popup-btn"
+        key={13}
+        color="primary"
+        onClick={() => props.setvalue(13)}
+      >
+        King
+      </Button>
     </div>
   );
 };
@@ -369,37 +509,46 @@ const StyledPopup = styled(Popup)`
   width: 100%;
   border-radius: 20px;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  flex-direction: row;
   justify-content: space-around;
   align-items: center;
   background-color: ${(props) => props.theme.secDark};
   font-size: 0.5em;
   padding: 0 1em;
+  .popup-btn {
+    width: 2.5em;
+    text-align: center;
+  }
 `;
 
 const GameBoard = (props) => {
   function PopUpdecider(props) {
     if (props.showPopup) {
-      return <StyledPopup setsuit={props.setsuit} />;
+      return <StyledPopup setvalue={props.setvalue} />;
     } else if (props.stack.length > 0) {
-      return <StyledCard id={`${props.lastSuit}1`} staged={[]} dummy={true} />;
+      return <div>{props.value}</div>;
     } else {
       return <div>Nothing</div>;
     }
   }
 
   return (
-    <div className={props.className}>
+    <div
+      className={props.className}
+      onDragEnter={(ev) => props.handleDragEnter(ev, { id: "board" })}
+    >
       <div
         className="stack"
         onDragEnter={(ev) => props.handleDragEnter(ev, { id: "stack" })}
         onDragLeave={(ev) => props.handleDragLeave(ev, { id: "stack" })}
       >
         <PopUpdecider
+          value={props.value}
           stack={props.stack}
           showPopup={props.showPopup}
           lastSuit={props.lastSuit}
-          setsuit={props.setsuit}
+          setvalue={props.setvalue}
         />
       </div>
     </div>
@@ -413,8 +562,8 @@ const StyledGameBoard = styled(GameBoard)`
   height: 100%;
   .stack {
     color: ${(props) => props.theme.white};
-    height: 50%;
-    width: 20%;
+    height: 60%;
+    width: 30%;
     border: ${(props) => "1px dashed " + props.theme.white};
     box-sizing: border-box;
     border-radius: 20px;
@@ -427,8 +576,13 @@ const StyledGameBoard = styled(GameBoard)`
 `;
 const FrameWork = (props) => (
   <div className={props.className}>
-    <StyledSettings gameprops={props.gameprops} />
+    <StyledSettings
+      handleOptionClick={props.handleOptionClick}
+      gameprops={props.gameprops}
+      selected={props.selectedOption}
+    />
     <StyledGameBoard
+      value={props.value}
       handleDragstart={props.handleDragstart}
       handleDragEnd={props.handleDragEnd}
       handleDragEnter={props.handleDragEnter}
@@ -436,7 +590,7 @@ const FrameWork = (props) => (
       stack={props.stack}
       showPopup={props.showPopup}
       lastSuit={props.lastSuit}
-      setsuit={props.setsuit}
+      setvalue={props.setvalue}
     />
     <StyledGameLog />
   </div>
@@ -492,7 +646,7 @@ const ActionBar = (props) => {
   return (
     <div className={props.className} ref={barRef}>
       <StyledButtonBox position="left">
-        <StyledButton
+        <Button
           color="secDark"
           onClick={() => {
             props.gameprops.moves.drawCard();
@@ -500,21 +654,21 @@ const ActionBar = (props) => {
           }}
         >
           Draw
-        </StyledButton>
-        <StyledButton color="secDark">Aktion</StyledButton>
-        <StyledButton color="secDark" onClick={() => props.playCardButton()}>
+        </Button>
+        <Button color="secDark">Aktion</Button>
+        <Button color="secDark" onClick={() => props.playCardButton()}>
           Play Cards
-        </StyledButton>
+        </Button>
       </StyledButtonBox>
       <StyledHandArea forwardedRef={props.actionbar}>
         {props.children}
       </StyledHandArea>
       <StyledButtonBox position="right">
-        <StyledButton color="secDark">Aktion</StyledButton>
-        <StyledButton color="secDark">Aktion</StyledButton>
-        <StyledButton color="secDark" onClick={() => props.callOut()}>
+        <Button color="secDark">Aktion</Button>
+        <Button color="secDark">Aktion</Button>
+        <Button color="secDark" onClick={() => props.callOut()}>
           Call
-        </StyledButton>
+        </Button>
       </StyledButtonBox>
     </div>
   );
@@ -524,4 +678,4 @@ const StyledActionBar = styled(ActionBar)`
   justify-content: center;
 `;
 
-export default StyledLiarUI;
+export default { StyledLiarUI, StyledGameLog, StyledSettings };

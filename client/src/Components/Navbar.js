@@ -125,7 +125,14 @@ function Navbar(props) {
             bg_shown={props.bg_shown}
             setBg={props.setBg}
           />
-          {Array(5)
+          <StyledItem
+            content={"International"}
+            to="/international"
+            fullpage={true}
+            bg_shown={props.bg_shown}
+            setBg={props.setBg}
+          />
+          {Array(4)
             .fill(1)
             .map((el, i) => (
               <StyledItem
@@ -147,8 +154,8 @@ function Navbar(props) {
             <StyledItem
               key={i}
               number={i}
-              content={"End"}
-              to="/"
+              content={"Lobby"}
+              to="/createLobby"
               fullpage={true}
               bg_shown={props.bg_shown}
               setBg={props.setBg}
@@ -165,7 +172,12 @@ function Item(props) {
       <StyledLink
         to={props.to}
         style={{ textDecoration: "none" }}
-        onClick={() => props.setBg(!props.fullpage)}
+        onClick={(ev) => {
+          props.setBg(!props.fullpage);
+          if (props.onClick) {
+            props.onClick(ev);
+          }
+        }}
       >
         {props.content}
       </StyledLink>
@@ -173,4 +185,4 @@ function Item(props) {
   );
 }
 
-export default StyledNavbar;
+export { StyledNavbar, StyledItem };

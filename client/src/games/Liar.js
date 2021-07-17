@@ -1,5 +1,7 @@
 import { Client } from "boardgame.io/react";
-import StyledLiarUI from "./LiarUI.js";
+import mod from "./LiarUI.js";
+
+const StyledLiarUI = mod.StyledLiarUI;
 
 //All Cards
 var cards = [];
@@ -39,7 +41,7 @@ var scards = shuffle(cards);
 const Liar = {
   setup: (ctx) => {
     return {
-      lastSuit: undefined,
+      lastValue: undefined,
       lastNum: 0,
       lastPlayer: undefined,
       hand: Array(ctx.numPlayers)
@@ -63,11 +65,13 @@ const Liar = {
   },
   moves: {
     playCard: (G, ctx, input) => {
-      if (G.lastSuit == undefined) {
-        if (input.suit == undefined) {
+      // type {value: string, ids: Array of string}
+      console.log("playing card", input);
+      if (G.lastValue == undefined) {
+        if (input.value == undefined) {
           return undefined;
         }
-        G.lastSuit = input.suit;
+        G.lastValue = input.value;
       }
       input.ids.forEach((id) => {
         if (G.hand[ctx.currentPlayer][id] == undefined) {
@@ -84,7 +88,7 @@ const Liar = {
     },
     callOut: (G, ctx) => {
       var tempstack = [...G.stack];
-      if (G.lastSuit !== undefined) {
+      if (G.lastValue !== undefined) {
         if (hasLied(G)) {
           G.hand[G.lastPlayer] = [...G.hand[G.lastPlayer], ...tempstack];
         } else {
@@ -94,7 +98,7 @@ const Liar = {
           ];
         }
         G.stack = [];
-        G.lastSuit = undefined;
+        G.lastValue = undefined;
       } else {
         return undefined;
       }
@@ -136,6 +140,7 @@ const LiarGame = Client({
   game: Liar,
   numPlayers: 3,
   board: StyledLiarUI,
+  debug: false,
 });
 
 export default LiarGame;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import StyledNavbar from "./Components/Navbar";
+import { StyledNavbar } from "./Components/Navbar";
 import StyledFooter from "./Components/Footer";
 import StyledContent from "./Components/Content";
 import Bungee from "./assets/Bungee-Regular.ttf";
@@ -8,12 +8,14 @@ import Roboto from "./assets/Roboto-Regular.ttf";
 import { useLocation } from "react-router-dom";
 
 const theme = {
-  primary: "#C4C4C4",
+  primary: "#CFCFC9",
   secondary: "#F3EBE9",
-  secDark: "#5A4141",
+  secDark: "#262730",
+  secLight: "#373841",
   white: "#fffff4",
-  green: "#2F6A3A",
+  green: "#05381E",
   blue: "#A2DBFA",
+
   textFont: "roboto,sans-seriff",
   titleFont: "bungee,sans-seriff",
   navheight: "3rem",

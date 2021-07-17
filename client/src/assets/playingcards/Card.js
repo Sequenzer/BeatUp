@@ -5,6 +5,7 @@ import SVGStripes from "./Components/Cardbacks/Stripes.js";
 import styled from "styled-components";
 
 function Card(props) {
+  const [clicked, setClicked] = useState(false);
   var id = "card";
   var card = props.id;
   var pos = props.pos;
@@ -14,45 +15,30 @@ function Card(props) {
     className: props.className,
     height: "100%",
   };
-  if (props.dummy) {
-    return (
-      <div>
-        {Cards[props.id]({
-          ...cardprops,
-          viewBox: "0 0 261 355",
-        })}
-      </div>
-    );
-  } else {
-    return (
-      <div
-        draggable
-        style={{ marginBottom: "5em" }}
-        onDragStart={(ev) =>
-          props.handleDragstart(ev, { id, card, pos, onhand })
-        }
-        onDragEnter={(ev) =>
-          props.handleDragEnter(ev, { id, card, pos, onhand })
-        }
-        onDragLeave={(ev) =>
-          props.handleDragLeave(ev, { id, card, pos, onhand })
-        }
-        onClick={(ev) => {
-          props.handleClick(ev, { id, card, pos, onhand });
-        }}
-      >
-        {Cards[props.id]({
-          ...cardprops,
-          viewBox: "0 0 261 355",
-        })}
-      </div>
-    );
-  }
+  return (
+    <div
+      draggable
+      style={{ marginBottom: "5em" }}
+      onDragStart={(ev) => props.handleDragstart(ev, { id, card, pos, onhand })}
+      onDragEnter={(ev) => props.handleDragEnter(ev, { id, card, pos, onhand })}
+      onDragLeave={(ev) => props.handleDragLeave(ev, { id, card, pos, onhand })}
+      onClick={(ev) => {
+        setClicked(!clicked);
+        props.handleClick(ev, { id, card, pos, onhand });
+      }}
+    >
+      {Cards[card]({
+        ...cardprops,
+        viewBox: "0 0 261 355",
+      })}
+    </div>
+  );
 }
 
 const StyledCard = styled(Card)`
   height: auto;
-  margin-top: ${(props) => (props.dummy ? 0 : "-5em")};
+  margin-top: ${(props) =>
+    props.staged.indexOf(props.pos) !== -1 ? "-8em" : "-5em"};
   position: absolute;
   left: ${(props) => {
     if (props.barwidth) {
@@ -65,7 +51,7 @@ const StyledCard = styled(Card)`
     }
     return 10 + left + "px";
   }};
-  width: 130px;
+  width: ${(props) => props.cardwidth + "px"};
   border-radius: 10px;
   border-style: ${(props) =>
     props.staged.indexOf(props.pos) !== -1 ? "solid" : "none"};
