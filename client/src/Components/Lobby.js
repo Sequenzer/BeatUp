@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import mod from "../games/LiarUI.js";
 import { useParams } from "react-router-dom";
-import io from "socket.io-client";
+//import io from "socket.io-client";
 
 const GameLog = mod.StyledGameLog;
 const Settings = mod.StyledSettings;
@@ -12,7 +12,7 @@ function LobbyScreen(props) {
   let { LobbyId } = useParams();
 
   const handleOptionClick = (ev, params) => {
-    if (selectedOption == params.value) {
+    if (selectedOption === params.value) {
       setSelected(undefined);
     } else {
       setSelected(params.value);

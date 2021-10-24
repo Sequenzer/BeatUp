@@ -58,7 +58,7 @@ const Liar = {
   turn: {
     moveLimit: 1,
     onEnd: (G, ctx) => {
-      if (G.hand[ctx.currentPlayer].length == 0) {
+      if (G.hand[ctx.currentPlayer].length === 0) {
         G.ranking.push(ctx.currentPlayer);
       }
     },
@@ -67,14 +67,14 @@ const Liar = {
     playCard: (G, ctx, input) => {
       // type {value: string, ids: Array of string}
       console.log("playing card", input);
-      if (G.lastValue == undefined) {
-        if (input.value == undefined) {
+      if (G.lastValue === undefined) {
+        if (input.value === undefined) {
           return undefined;
         }
         G.lastValue = input.value;
       }
       input.ids.forEach((id) => {
-        if (G.hand[ctx.currentPlayer][id] == undefined) {
+        if (G.hand[ctx.currentPlayer][id] === undefined) {
           //Do nothing
         } else {
           var card = G.hand[ctx.currentPlayer][id];
@@ -130,7 +130,7 @@ function hasValue(card, value) {
   return regex.test(card);
 }
 function isHigher(card1, card2) {
-  if (card2 == undefined) {
+  if (card2 === undefined) {
     return true;
   }
   return card1 > card2;

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import o from "../assets/xo.svg";
+//import o from "../assets/xo.svg";
 
 function TicTacToeUI(props) {
   let winner = (

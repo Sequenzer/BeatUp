@@ -1,7 +1,7 @@
 import { Client } from "boardgame.io/react";
 import { INVALID_MOVE } from "boardgame.io/core";
 import StyledTicTacToeUI from "./TicTacToeUI.js";
-import styled from "styled-components";
+//import styled from "styled-components";
 
 const TicTacToe = {
   setup: () => ({ cells: Array(9).fill(null) }),

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import * as Cards from "./Components/Standard/index.js";
-import SVGCardback from "./Components/Cardbacks/Cardback.js";
-import SVGStripes from "./Components/Cardbacks/Stripes.js";
+//import SVGCardback from "./Components/Cardbacks/Cardback.js";
+//import SVGStripes from "./Components/Cardbacks/Stripes.js";
 import styled from "styled-components";
 
 function Card(props) {

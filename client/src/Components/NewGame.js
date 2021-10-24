@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Switch, Route } from "react-router-dom";
-import StyledBtn from "./Btn";
+//import { Switch, Route } from "react-router-dom";
+//import StyledBtn from "./Btn";
 import { generateCombination } from "gfycat-style-urls";
 import { StyledItem } from "./Navbar";
 

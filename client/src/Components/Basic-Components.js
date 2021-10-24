@@ -7,7 +7,8 @@ const Btn = (props) => (
   </div>
 );
 const StyledBtn = styled(Btn)`
-  color: ${(props) => (props.color == "secDark" ? props.theme.white : "black")};
+  color: ${(props) =>
+    props.color === "secDark" ? props.theme.white : "black"};
   background-color: ${(props) => props.theme[props.color]};
   font-family: ${(props) => props.theme.textFont};
   font-size: 1.5em;

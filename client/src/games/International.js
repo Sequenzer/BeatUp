@@ -24,13 +24,13 @@ class Table {
   }
   getNumberGender(gender) {
     return this.seats.filter((seat) => {
-      return seat.person.gender == gender;
+      return seat.person.gender === gender;
     }).length;
   }
   isCorrectCountry() {
     return (
       this.seats.filter((seat) => seat.person.country !== this.country)
-        .length == 0
+        .length === 0
     );
   }
   isCorrectGender() {
@@ -38,9 +38,9 @@ class Table {
     var numberOfMen = this.getNumberGender("m");
 
     return (
-      numberOfWomen == numberOfMen ||
-      numberOfWomen == numberOfMen + 1 ||
-      numberOfWomen + 1 == numberOfMen
+      numberOfWomen === numberOfMen ||
+      numberOfWomen === numberOfMen + 1 ||
+      numberOfWomen + 1 === numberOfMen
     );
   }
   isCorrectTable() {
@@ -202,13 +202,13 @@ const International = {
   //Game logic
   getNumberGender(table, gender) {
     return table.seats.filter((seat) => {
-      return seat.person.gender == gender;
+      return seat.person.gender === gender;
     }).length;
   },
   isCorrectCountry(table) {
     return (
       table.seats.filter((seat) => seat.person.country !== table.country)
-        .length == 0
+        .length === 0
     );
   },
   //DO something

@@ -15,13 +15,15 @@ const StyledContent = styled(ContentPage)`
   grid-template-rows: 50% 50%;
   grid-row: 3/4;
   grid-column: 1/3;
+  overflow: hidden;
+  width: 100%;
 
   @keyframes slideToMiddle {
     0% {
       transform: translateX(70%);
     }
     100% {
-      transform: translateX(0);
+      transform: translateX(0%);
     }
   }
 
@@ -32,13 +34,13 @@ const StyledContent = styled(ContentPage)`
     background-size: 75vw 100%;
     clip-path: ${(props) =>
       props.bg_shown ? "circle(90% at 0 100%)" : "circle(0% at 0 100%)"};
-    transition: clip-path 1.3s linear;
+    transition: clip-path 0.5s linear;
   }
   .bgio-client {
     height: 100%;
     grid-column: 2/4;
     grid-row: 1/4;
-    animation: 1s ease-out 0s 1 slideToMiddle;
+    animation: 10s linear 0s 1 slideToMiddle;
   }
 `;
 const StyledEmptyPage = styled(EmptyPage)`

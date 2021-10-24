@@ -24,7 +24,7 @@ function LiarUI(props) {
   var dragNode = useRef();
 
   const handleOptionClick = (ev, params) => {
-    if (selectedOption == params.value) {
+    if (selectedOption === params.value) {
       setSelected(undefined);
     } else {
       setSelected(params.value);
@@ -48,7 +48,7 @@ function LiarUI(props) {
   const handleDragEnd = (ev) => {
     setDragging(false);
     console.log("Drag ended", dragItem.current, elementToDrag.current);
-    if (dragItem.current.id == "stack") {
+    if (dragItem.current.id === "stack") {
       console.log("dragged to stack", elementToDrag.current);
       if (props.G.lastValue !== undefined) {
         props.moves.playCard({ ids: [elementToDrag.current.pos] });
@@ -70,17 +70,17 @@ function LiarUI(props) {
 
   function handleDragEnter(ev, params) {
     if (
-      params.id == "card" &&
+      params.id === "card" &&
       params.onhand &&
       dragItem.current.pos !== params.pos
     ) {
       ev.target.style.cursor = "pointer";
       console.log("Entered new Handcard");
       dragItem.current = params;
-    } else if (params.id == "stack") {
+    } else if (params.id === "stack") {
       console.log("Stack entered");
       dragItem.current = params;
-    } else if (params.id == "board") {
+    } else if (params.id === "board") {
       console.log("Board entered");
       dragItem.current = params;
     }
@@ -92,7 +92,7 @@ function LiarUI(props) {
     //Do nothing
   }
   function handleCardClick(ev, params) {
-    if (staged.indexOf(params.pos) == -1) {
+    if (staged.indexOf(params.pos) === -1) {
       setstaged((old) => {
         var newstaged = [...old];
         newstaged.push(params.pos);
@@ -107,7 +107,7 @@ function LiarUI(props) {
     }
   }
   useEffect(() => {
-    if (showPopup == true) {
+    if (showPopup === true) {
       var nextplayer = (props.ctx.playOrderPos + 1) % props.ctx.numPlayers;
       setPopup(false);
       var params = { ids: staged, value: value };
@@ -117,10 +117,10 @@ function LiarUI(props) {
     }
   }, [value]);
   function playCardButton() {
-    if (staged.length == 0) {
+    if (staged.length === 0) {
       console.log("You have to select Cards to Play");
     } else {
-      if (props.G.lastValue == undefined) {
+      if (props.G.lastValue === undefined) {
         console.log("You have to name a Suit");
         setPopup(true);
       } else {
@@ -209,7 +209,7 @@ function Settings(props) {
           >
             Restart
           </Button>
-          {props.selected == "restart" ? (
+          {props.selected === "restart" ? (
             <ul className="ctx-menu">
               <li className="ctx-item">Horst</li>
               <li className="ctx-item">Horst</li>
@@ -224,7 +224,7 @@ function Settings(props) {
           >
             History
           </Button>
-          {props.selected == "history" ? (
+          {props.selected === "history" ? (
             <ul className="ctx-menu">
               <li className="ctx-item">Horst</li>
               <li className="ctx-item">Horst</li>
@@ -238,7 +238,7 @@ function Settings(props) {
           >
             Options
           </Button>
-          {props.selected == "options" ? (
+          {props.selected === "options" ? (
             <ul className="ctx-menu">
               <li className="ctx-item">Horst</li>
               <li className="ctx-item">Horst</li>
@@ -252,7 +252,7 @@ function Settings(props) {
           >
             Give Up!
           </Button>
-          {props.selected == "giveup" ? (
+          {props.selected === "giveup" ? (
             <ul className="ctx-menu">
               <li className="ctx-item">Horst</li>
               <li className="ctx-item">Horst</li>
@@ -316,16 +316,16 @@ const StyledSettings = styled(Settings)`
   }
   //flex-grow: 4;
   .restart {
-    flex-grow: ${(props) => (props.selected == "restart" ? 4 : "")};
+    flex-grow: ${(props) => (props.selected === "restart" ? 4 : "")};
   }
   .history {
-    flex-grow: ${(props) => (props.selected == "history" ? 4 : "")};
+    flex-grow: ${(props) => (props.selected === "history" ? 4 : "")};
   }
   .options {
-    flex-grow: ${(props) => (props.selected == "options" ? 4 : "")};
+    flex-grow: ${(props) => (props.selected === "options" ? 4 : "")};
   }
   .giveup {
-    flex-grow: ${(props) => (props.selected == "giveup" ? 4 : "")};
+    flex-grow: ${(props) => (props.selected === "giveup" ? 4 : "")};
   }
 `;
 const LogBlock = (props) => (
@@ -389,7 +389,7 @@ function useOnScreen(ref) {
 const GameLog = (props) => {
   const [chatLog, setChatLog] = useState([]);
   //const [member, setMember] = useState(["Horst","Peter"]);
-  const [name, setName] = useState("Horst");
+  const [name] = useState("Horst");
   const [test, setTest] = useState(false);
 
   const inputRef = useRef(null);
@@ -660,9 +660,9 @@ const ButtonBox = (props) => (
 const StyledButtonBox = styled(ButtonBox)`
   background: ${(props) => props.theme.secondary};
   border-radius: ${(props) =>
-    props.position == "left" ? "5px 0px 0px 0px" : "0px 5px 0px 0px"};
+    props.position === "left" ? "5px 0px 0px 0px" : "0px 5px 0px 0px"};
   box-shadow: ${(props) =>
-    props.position == "left"
+    props.position === "left"
       ? "inset 4px 4px 4px rgba(0, 0, 0, 0.15), inset 2px 2px 2px rgba(0, 0, 0, 0.2), inset 1px 1px 1px rgba(0, 0, 0, 0.25)"
       : "inset -4px 4px 4px rgba(0, 0, 0, 0.15), inset -2px 2px 2px rgba(0, 0, 0, 0.2), inset -1px 1px 1px rgba(0, 0, 0, 0.25)"};
   width: 15vw;

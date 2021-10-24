@@ -54,7 +54,7 @@ body {
 
 function App() {
   var location = useLocation().pathname;
-  const [bg_shown, setBg] = useState(location == "/");
+  const [bg_shown, setBg] = useState(location === "/");
 
   return (
     <ThemeProvider theme={theme}>
