@@ -15,8 +15,8 @@ const StyledContent = styled(ContentPage)`
   grid-template-rows: 50% 50%;
   grid-row: 3/4;
   grid-column: 1/3;
-  overflow: hidden;
-  width: 100%;
+  //overflow: hidden;
+  clip: rect(auto, auto, auto, auto);
 
   @keyframes slideToMiddle {
     0% {
@@ -40,7 +40,12 @@ const StyledContent = styled(ContentPage)`
     height: 100%;
     grid-column: 2/4;
     grid-row: 1/4;
-    animation: 10s linear 0s 1 slideToMiddle;
+    //animation: 2s linear 0s 1 slideToMiddle;
+    //overflow: hidden;
+    display: inline-block;
+  }
+  .bgio-client > div {
+    width: 100%;
   }
 `;
 const StyledEmptyPage = styled(EmptyPage)`

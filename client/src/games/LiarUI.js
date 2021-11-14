@@ -3,11 +3,15 @@ import styled from "styled-components";
 import StyledHand from "../assets/playingcards/Hand";
 import StyledCard from "../assets/playingcards/Card";
 import { io } from "socket.io-client";
-
 import {
   StyledBtn as Button,
   StyledHeader as Header,
 } from "../Components/Basic-Components";
+
+//Draggable import
+import { gsap } from "gsap";
+import Draggable from "gsap/Draggable";
+gsap.registerPlugin(Draggable);
 
 var temphand = ["Club1", "Diamond2", "Heart3", "Heart1"];
 
@@ -16,12 +20,31 @@ function LiarUI(props) {
   const [showPopup, setPopup] = useState(false);
   const [value, setvalue] = useState(undefined);
   const [staged, setstaged] = useState([]);
-  const [dragging, setDragging] = useState(false);
   const [barwidth, setwidth] = useState(undefined);
   const [selectedOption, setSelected] = useState(undefined);
-  var elementToDrag = useRef(null);
-  var dragItem = useRef();
-  var dragNode = useRef();
+  const [DragObjID, setDragObjID] = useState(undefined);
+
+  var DragObject = useRef(null);
+  const DragContainer = useRef(null);
+
+  useEffect((event) => {
+    Draggable.create(".card", {
+      type: "x,y",
+      container: DragContainer.current,
+      onDragStart: function () {
+        console.log(this.target.id);
+        setDragObjID(this.target.id);
+        sethand((old) => {
+          console.log(old, old.indexOf(this.target.id));
+          var newhand = old.slice();
+          newhand.splice(old.indexOf(this.target.id), 1);
+          console.log(newhand);
+
+          return newhand;
+        });
+      },
+    });
+  }, []);
 
   const handleOptionClick = (ev, params) => {
     if (selectedOption === params.value) {
@@ -30,67 +53,12 @@ function LiarUI(props) {
       setSelected(params.value);
     }
   };
-  //Drag Effect
-  const handleDragstart = (event, params) => {
-    console.log("Drag starting");
-    dragItem.current = params;
-    elementToDrag.current = params;
-    dragNode.current = event.target;
-    dragNode.current.addEventListener("dragend", handleDragEnd);
-    setDragging(true);
-  };
 
   function getNumberOfCard(card) {
     var r = /\d+/;
     return parseInt(card.match(r)[0]);
   }
 
-  const handleDragEnd = (ev) => {
-    setDragging(false);
-    console.log("Drag ended", dragItem.current, elementToDrag.current);
-    if (dragItem.current.id === "stack") {
-      console.log("dragged to stack", elementToDrag.current);
-      if (props.G.lastValue !== undefined) {
-        props.moves.playCard({ ids: [elementToDrag.current.pos] });
-      } else {
-        var lastvalue = getNumberOfCard(elementToDrag.current.card);
-        props.moves.playCard({
-          ids: [elementToDrag.current.pos],
-          value: lastvalue,
-        });
-        setvalue(lastvalue);
-      }
-      var nextplayer = (props.ctx.playOrderPos + 1) % props.ctx.numPlayers;
-      sethand(props.G.hand[nextplayer]);
-    }
-    dragNode.current.removeEventListener("dragend", handleDragEnd);
-    dragItem.current = null;
-    dragNode.current = null;
-  };
-
-  function handleDragEnter(ev, params) {
-    if (
-      params.id === "card" &&
-      params.onhand &&
-      dragItem.current.pos !== params.pos
-    ) {
-      ev.target.style.cursor = "pointer";
-      console.log("Entered new Handcard");
-      dragItem.current = params;
-    } else if (params.id === "stack") {
-      console.log("Stack entered");
-      dragItem.current = params;
-    } else if (params.id === "board") {
-      console.log("Board entered");
-      dragItem.current = params;
-    }
-    ev.stopPropagation();
-  }
-  function handleDragLeave(ev, params) {
-    console.log("Leaving");
-
-    //Do nothing
-  }
   function handleCardClick(ev, params) {
     if (staged.indexOf(params.pos) === -1) {
       setstaged((old) => {
@@ -142,15 +110,11 @@ function LiarUI(props) {
   }, [barwidth]);
 
   return (
-    <div className={props.className}>
+    <div className={props.className} ref={DragContainer}>
       <StyledFrameWork
         gameprops={props}
         selectedOption={selectedOption}
         handleOptionClick={handleOptionClick}
-        handleDragEnter={handleDragEnter}
-        handleDragstart={handleDragstart}
-        handleDragEnd={handleDragEnd}
-        handleDragLeave={handleDragLeave}
         stack={props.G.stack}
         showPopup={showPopup}
         lastSuit={props.G.lastSuit}
@@ -171,14 +135,12 @@ function LiarUI(props) {
               id={card}
               pos={i}
               barwidth={barwidth}
+              inHand={hand.indexOf(card) !== -1}
+              DragObjID={DragObjID}
               handsize={hand.length}
               staged={staged}
               cardwidth={130}
               offset={60}
-              handleDragEnter={handleDragEnter}
-              handleDragstart={handleDragstart}
-              handleDragEnd={handleDragEnd}
-              handleDragLeave={handleDragLeave}
               handleClick={handleCardClick}
               onhand={true}
             />
@@ -581,15 +543,8 @@ const GameBoard = (props) => {
   }
 
   return (
-    <div
-      className={props.className}
-      onDragEnter={(ev) => props.handleDragEnter(ev, { id: "board" })}
-    >
-      <div
-        className="stack"
-        onDragEnter={(ev) => props.handleDragEnter(ev, { id: "stack" })}
-        onDragLeave={(ev) => props.handleDragLeave(ev, { id: "stack" })}
-      >
+    <div className={props.className}>
+      <div className="stack">
         <PopUpdecider
           value={props.value}
           stack={props.stack}
@@ -630,10 +585,6 @@ const FrameWork = (props) => (
     />
     <StyledGameBoard
       value={props.value}
-      handleDragstart={props.handleDragstart}
-      handleDragEnd={props.handleDragEnd}
-      handleDragEnter={props.handleDragEnter}
-      handleDragLeave={props.handleDragLeave}
       stack={props.stack}
       showPopup={props.showPopup}
       lastSuit={props.lastSuit}

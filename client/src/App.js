@@ -5,6 +5,7 @@ import StyledFooter from "./Components/Footer";
 import StyledContent from "./Components/Content";
 import Bungee from "./assets/Bungee-Regular.ttf";
 import Roboto from "./assets/Roboto-Regular.ttf";
+import Volkhov from "./assets/Volkhov-Bold.ttf";
 import { useLocation } from "react-router-dom";
 
 const theme = {
@@ -18,8 +19,9 @@ const theme = {
   chatgreen: "#7cc88d",
   chatblue: "#9AAAE6",
 
-  textFont: "roboto,sans-seriff",
-  titleFont: "bungee,sans-seriff",
+  textFont: "roboto,sans-serif",
+  cardFont: "Volkhov,serif",
+  titleFont: "bungee,sans-serif",
   navheight: "3rem",
   footheight: "1fr",
   boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.75);",
@@ -35,6 +37,13 @@ const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Roboto';
     src: url(${Roboto}) format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: auto;
+  }
+  @font-face {
+    font-family: 'Volkhov';
+    src: url(${Volkhov}) format('truetype');
     font-weight: 300;
     font-style: normal;
     font-display: auto;

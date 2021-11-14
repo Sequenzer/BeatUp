@@ -17,11 +17,9 @@ function Card(props) {
   };
   return (
     <div
-      draggable
       style={{ marginBottom: "5em" }}
-      onDragStart={(ev) => props.handleDragstart(ev, { id, card, pos, onhand })}
-      onDragEnter={(ev) => props.handleDragEnter(ev, { id, card, pos, onhand })}
-      onDragLeave={(ev) => props.handleDragLeave(ev, { id, card, pos, onhand })}
+      className={"card"}
+      id={card}
       onClick={(ev) => {
         setClicked(!clicked);
         props.handleClick(ev, { id, card, pos, onhand });
@@ -37,6 +35,7 @@ function Card(props) {
 
 const StyledCard = styled(Card)`
   height: auto;
+  overflow: auto;
   margin-top: ${(props) =>
     props.staged.indexOf(props.pos) !== -1 ? "-8em" : "-5em"};
   position: absolute;
@@ -44,13 +43,19 @@ const StyledCard = styled(Card)`
     if (props.barwidth) {
       var barwidth = parseInt(props.barwidth.slice(0, -2)) - 20;
       var offset = (barwidth - props.cardwidth) / (props.handsize - 1);
+      var left = 0;
+      if (props.inHand) {
+        left = offset * props.pos;
+      } else {
+        //Do Nothing
+      }
     }
-    var left = offset * props.pos;
+
     if (isNaN(left)) {
       return (barwidth - props.cardwidth) / 2 + "px";
     }
     return 10 + left + "px";
-  }};
+  }}};
   width: ${(props) => props.cardwidth + "px"};
   border-radius: 10px;
   border-style: ${(props) =>
