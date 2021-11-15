@@ -15,7 +15,7 @@ function LiarUI(props) {
   return (
     <div className={props.className}>
       <FrameWork />
-      <ActionBar> Nothing for Now</ActionBar>
+      <ActionBar> Temporary Change</ActionBar>
     </div>
   );
 }
