@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import mod from "../games/LiarUI.js";
-import { useParams } from "react-router-dom";
+import GameLog from "./SBLFrame/Gamelog";
+import Settings from "./SBLFrame/Settings";
+// import { useParams } from "react-router-dom";
 //import io from "socket.io-client";
-
-const GameLog = mod.StyledGameLog;
-const Settings = mod.StyledSettings;
 
 function LobbyScreen(props) {
   const [selectedOption, setSelected] = useState(undefined);
-  let { LobbyId } = useParams();
+  // let { LobbyId } = useParams();
 
   const handleOptionClick = (ev, params) => {
     if (selectedOption === params.value) {

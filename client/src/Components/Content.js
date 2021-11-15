@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import Test from "../assets/wide-cafe.jpg";
-import { Switch, Route, useRouteMatch } from "react-router-dom";
-import TicTacToeGame from "../games/TicTacToe.js";
-import Liar from "../games/Liar.js";
+import { Switch, Route } from "react-router-dom";
+import TicTacToeGame from "../games/TacTacToe/TicTacToe.js";
+import Liar from "../games/Liar/Liar.js";
 import StyledNewGame from "../Components/NewGame.js";
-import InternationalGame from "../games/International.js";
+import InternationalGame from "../games/International/International.js";
 import StyledLobbyScreen from "./Lobby.js";
 
 const StyledContent = styled(ContentPage)`
@@ -70,7 +70,7 @@ const StyledEmptyPage = styled(EmptyPage)`
 `;
 
 function ContentPage(props) {
-  let { path, url } = useRouteMatch();
+  // let { path, url } = useRouteMatch();
   return (
     <div className={props.className}>
       <div className="bg-img"></div>

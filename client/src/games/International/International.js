@@ -1,52 +1,9 @@
 import { Client } from "boardgame.io/react";
-import SvgHeart13King from "../assets/playingcards/Components/Standard/Heart13King";
 import InternationalUI from "./InternationalUI";
 
 //Table
 //Example Seats [0,1,2,3]
 
-class Seat {
-  constructor() {
-    this.person = undefined;
-  }
-  getSeated(person) {
-    this.person = person;
-  }
-  clear() {
-    this.person = undefined;
-  }
-}
-//Example Seats [Seat,Seat,Seat,3]
-class Table {
-  constructor(country, seats) {
-    this.seats = seats;
-    this.country = country;
-  }
-  getNumberGender(gender) {
-    return this.seats.filter((seat) => {
-      return seat.person.gender === gender;
-    }).length;
-  }
-  isCorrectCountry() {
-    return (
-      this.seats.filter((seat) => seat.person.country !== this.country)
-        .length === 0
-    );
-  }
-  isCorrectGender() {
-    var numberOfWomen = this.getNumberGender("f");
-    var numberOfMen = this.getNumberGender("m");
-
-    return (
-      numberOfWomen === numberOfMen ||
-      numberOfWomen === numberOfMen + 1 ||
-      numberOfWomen + 1 === numberOfMen
-    );
-  }
-  isCorrectTable() {
-    return this.isCorrectCountry() && this.isCorrectGender();
-  }
-}
 //create a deck with 12 coutntries with each 4 man and 4 women
 const countries = [
   "DEU",
@@ -172,7 +129,7 @@ const International = {
       next: "play",
       onBegin: (G, ctx) => {
         //Deal hand
-        G.hand.map((hand) => {
+        G.hand.forEach((hand) => {
           Array(7)
             .fill(1)
             .forEach((num) => {

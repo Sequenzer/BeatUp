@@ -1,14 +1,12 @@
 import { Client } from "boardgame.io/react";
-import mod from "./LiarUI.js";
-
-const StyledLiarUI = mod.StyledLiarUI;
+import LiarUI from "./LiarUI.js";
 
 //All Cards
 var cards = [];
-["Club", "Diamond", "Heart", "Spade"].map((suit) => {
+["Club", "Diamond", "Heart", "Spade"].forEach((suit) => {
   Array(10)
     .fill(1)
-    .map((ele, i) => {
+    .forEach((ele, i) => {
       cards.push(suit + (i + 1));
     });
   cards.push(suit + "11Jack");
@@ -47,7 +45,6 @@ const Liar = {
       hand: Array(ctx.numPlayers)
         .fill(1)
         .map((ele, i) => {
-          var len = scards.length;
           var numcards = Math.floor(scards.length / ctx.numPlayers);
           return scards.slice(i * numcards, (i + 1) * numcards);
         }),
@@ -129,17 +126,11 @@ function hasValue(card, value) {
   var regex = new RegExp(`^(?:(?!${value}).)*${value}(?!.*${value}).*$`);
   return regex.test(card);
 }
-function isHigher(card1, card2) {
-  if (card2 === undefined) {
-    return true;
-  }
-  return card1 > card2;
-}
 
 const LiarGame = Client({
   game: Liar,
   numPlayers: 3,
-  board: StyledLiarUI,
+  board: LiarUI,
   debug: false,
 });
 
