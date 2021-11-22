@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Card from "../../Components/utils/CardComponent";
 
 var suits = ["Clover", "Diamond", "Heart", "Pike"];
-var values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+var values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "B", "Q", "K"];
 
 function InternationalUI(props) {
   return (

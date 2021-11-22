@@ -134,6 +134,9 @@ const StyledSettings = styled(Settings)`
   .ctx-item:first-child {
     margin-top: 0.5em;
   }
+  .ctx-item:last-child {
+    margin-bottom: 0.5em;
+  }
   //flex-grow: 4;
   .restart {
     flex-grow: ${(props) => (props.selected === "restart" ? 4 : "")};
