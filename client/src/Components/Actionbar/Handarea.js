@@ -1,15 +1,22 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import Card from "../utils/CardComponent";
-import { Draggable, selector } from "gsap/all";
-import gsap from "gsap";
-gsap.registerPlugin(Draggable);
+import Sortable, { Swap } from "sortablejs";
+Sortable.mount(new Swap());
+// import { Draggable } from "gsap/all";
+// import gsap from "gsap";
+// gsap.registerPlugin(Draggable);
+
+function getPosByNumber(hand, handPos, number) {
+  var card = hand[number];
+  return handPos.indexOf(card);
+}
 
 const CardSlot = React.forwardRef((props, ref) => {
   //get suit and value of the card from props.hand
   var { suit, value } = props.hand[props.cardnumber];
   return (
-    <div className={props.className + ` draggable`} ref={ref}>
+    <div className={props.className} ref={ref}>
       <Card suit={suit} value={value} width={props.width} className="card" />
     </div>
   );
@@ -20,51 +27,51 @@ const StyledCardSlot = styled(CardSlot)`
   position: absolute;
   top: -5em;
   left: ${(props) => {
-    return `calc( ${props.offset} * ${props.cardnumber} + ${props.padding.left_right}vw)`;
+    return `calc( ${props.offset} * ${getPosByNumber(
+      props.hand,
+      props.handPos,
+      props.cardnumber
+    )} + ${props.padding.left_right}vw)`;
   }};
 `;
 
 const HandArea = (props) => {
+  const [hand, setHand] = useState(props.hand);
+  const [handPos, setPos] = useState(hand);
+  console.log(handPos);
   const handRef = useRef(null);
   const cardRef = useRef([]);
-  const curRef = useRef(null);
-
-  const [hand, setHand] = useState(props.hand);
-
-  var dragElements = cardRef.current;
-
-  function onDrop(dragged, dropped) {
-    console.log(dragged, dropped);
-  }
-
-  Draggable.create(dragElements, {
-    bounds: handRef.current,
-    onDrag: (e) => {
-      var i = dragElements.length;
-      while (--i > -1) {
-        if (curRef.current.hitTest(dragElements[i], "10%")) {
-          console.log("hit", i);
-        }
-      }
-    },
-    onDragEnd: (e) => {
-      var i = dragElements.length;
-      while (--i > -1) {
-        if (curRef.current.hitTest(dragElements[i], "10%")) {
-          onDrop(curRef, dragElements[i]);
-        }
-      }
-    },
-    onDragStart(e) {
-      console.log("drag start");
-      curRef.current = this;
-    },
-  });
 
   useEffect(() => {
-    console.log(cardRef.current);
+    console.log(cardRef.current, handRef);
+  }, []);
+  useEffect(() => {
+    const sortable = Sortable.create(handRef.current, {
+      swap: true, // Enable swap plugin
+      swapClass: "highlight", // The class applied to the hovered swap item
+      animation: 150,
+      onSort: function (evt) {
+        setPos((oldPos) => {
+          var newPos = [];
+          oldPos.forEach((ele, i) => {
+            if (i === evt.oldIndex) {
+              newPos[i] = oldPos[evt.newIndex];
+            } else if (i === evt.newIndex) {
+              newPos[i] = oldPos[evt.oldIndex];
+            } else {
+              newPos[i] = ele;
+            }
+          });
+          return newPos;
+        });
+      },
+    });
+    console.log(sortable);
   }, []);
 
+  useEffect(() => {
+    console.log(handPos);
+  }, [handPos]);
   return (
     <div className={props.className} ref={handRef}>
       {hand.map((card, i) => {
@@ -73,12 +80,14 @@ const HandArea = (props) => {
           //   <Card suit={card.suit} value={card.value} width={cardwith} />
           // </div>
           <StyledCardSlot
+            className={`${i}`}
             key={i}
             cardnumber={i}
             ref={(ele) => {
               cardRef.current[i] = ele;
             }}
             hand={hand}
+            handPos={handPos}
             setHand={setHand}
             offset={props.offset}
             width={props.cardwidth}
