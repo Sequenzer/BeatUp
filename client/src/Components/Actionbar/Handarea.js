@@ -1,16 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import Card from "../utils/CardComponent";
-import Sortable, { Swap } from "sortablejs";
-Sortable.mount(new Swap());
-// import { Draggable } from "gsap/all";
-// import gsap from "gsap";
-// gsap.registerPlugin(Draggable);
-
-function getPosByNumber(hand, handPos, number) {
-  var card = hand[number];
-  return handPos.indexOf(card);
-}
+import { Sortable, MultiDrag } from "sortablejs";
+Sortable.mount(new MultiDrag());
 
 const CardSlot = React.forwardRef((props, ref) => {
   //get suit and value of the card from props.hand
@@ -24,75 +16,29 @@ const CardSlot = React.forwardRef((props, ref) => {
 
 const StyledCardSlot = styled(CardSlot)`
   width: minmax(${(props) => props.width / 2}em, ${(props) => props.width}em);
-  position: absolute;
-  top: -5em;
-  left: ${(props) => {
-    return `calc( ${props.offset} * ${getPosByNumber(
-      props.hand,
-      props.handPos,
-      props.cardnumber
-    )} + ${props.padding.left_right}vw)`;
-  }};
+  display: block;
+  grid-row: 1;
 `;
 
 const HandArea = (props) => {
-  const [hand, setHand] = useState(props.hand);
-  const [handPos, setPos] = useState(hand);
-  console.log(handPos);
-  const handRef = useRef(null);
   const cardRef = useRef([]);
 
-  useEffect(() => {
-    console.log(cardRef.current, handRef);
-  }, []);
-  useEffect(() => {
-    const sortable = Sortable.create(handRef.current, {
-      swap: true, // Enable swap plugin
-      swapClass: "highlight", // The class applied to the hovered swap item
-      animation: 150,
-      onSort: function (evt) {
-        setPos((oldPos) => {
-          var newPos = [];
-          oldPos.forEach((ele, i) => {
-            if (i === evt.oldIndex) {
-              newPos[i] = oldPos[evt.newIndex];
-            } else if (i === evt.newIndex) {
-              newPos[i] = oldPos[evt.oldIndex];
-            } else {
-              newPos[i] = ele;
-            }
-          });
-          return newPos;
-        });
-      },
-    });
-    console.log(sortable);
-  }, []);
-
-  useEffect(() => {
-    console.log(handPos);
-  }, [handPos]);
   return (
-    <div className={props.className} ref={handRef}>
-      {hand.map((card, i) => {
+    <div className={props.className} ref={props.handareaRef.hand}>
+      {props.hand.map((card, i) => {
         return (
-          // <div className="card_container" key={i}>
-          //   <Card suit={card.suit} value={card.value} width={cardwith} />
-          // </div>
           <StyledCardSlot
-            className={`${i}`}
+            className={`card`}
             key={i}
             cardnumber={i}
             ref={(ele) => {
-              cardRef.current[i] = ele;
+              props.handareaRef.cardRef.current[i] = ele;
             }}
-            hand={hand}
-            handPos={handPos}
-            setHand={setHand}
+            hand={props.hand}
+            setHand={props.setHand}
             offset={props.offset}
             width={props.cardwidth}
             padding={props.padding}
-            handRef={handRef}
           />
         );
       })}
@@ -110,8 +56,17 @@ const StyledHandArea = styled(HandArea).attrs((props) => {
       left_right: getHandWidth() * 0.1,
     };
   }
+
   var getCardWidth = () => (props.cardwidth ? props.cardwidth : 9);
   var getHandWidth = () => (props.width ? props.width : 50);
+
+  var getGrid = () => {
+    var grid = [];
+    props.hand.forEach((card, i) => {
+      grid.push(getOffset());
+    });
+    return grid;
+  };
 
   return {
     width: getHandWidth(),
@@ -119,13 +74,31 @@ const StyledHandArea = styled(HandArea).attrs((props) => {
     padding: getPadding(),
     cardwidth: getCardWidth(),
     offset: getOffset(),
+    grid: getGrid(),
   };
 })`
   height: ${(props) => props.height}em;
   width: ${(props) => props.width}vw;
   background-color: ${(props) => props.theme.green};
-  justify-content: space-around;
-  position: relative;
+  display: grid;
+  grid-template-columns: ${(props) => props.grid.join(" ")};
+  grid-template-rows: 1fr;
+  padding: 0 ${(props) => props.padding.left_right}vw;
+
+  .card {
+    margin-top: -3em;
+  }
+
+  .ghost {
+    opacity: 0.5;
+    z-index: -1;
+  }
+  .chosen {
+    opacity: 0.1;
+  }
+  .selected svg {
+    border: 2px solid red;
+  }
 `;
 
 export default StyledHandArea;

@@ -140,11 +140,16 @@ function Card(props) {
 const StyledCard = styled(Card).attrs((props) => ({
   height: props.height || props.width * (3.5 / 2.5) || 7,
   width: props.width || props.height * (2.5 / 3.5) || 5,
+  radius:
+    props.radius ||
+    props.width * (50 / 500) ||
+    props.height * (2.5 / 3.5) * (50 / 500) ||
+    0.5,
 }))`
   width: ${(props) => props.width}em;
   height: ${(props) => props.height}em;
   background-color: #fff;
-  border-radius: ${(props) => props.width * (50 / 500)}em;
+  border-radius: ${(props) => props.radius}em;
   font-family: ${(props) => props.theme.cardFont};
   box-shadow: 0 0 0.5vw 0 rgba(0, 0, 0, 0.5);
 `;
