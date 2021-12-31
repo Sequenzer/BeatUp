@@ -7,6 +7,7 @@ import { StyledItem } from "./Navbar";
 
 function NewLobby(props) {
   const Code = generateCombination(2, "-");
+  const name = generateCombination(0);
   function handleNewGame(props) {
     console.log(Code);
   }

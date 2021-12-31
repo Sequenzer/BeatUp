@@ -62,14 +62,11 @@ body {
 `;
 
 function App() {
-  var location = useLocation().pathname;
-  const [bg_shown, setBg] = useState(location === "/");
-
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <StyledNavbar setBg={setBg} bg_shown={bg_shown} />
-      <StyledContent bg_shown={bg_shown} setBg={setBg} />
+      <StyledNavbar />
+      <StyledContent />
       <StyledFooter />
     </ThemeProvider>
   );

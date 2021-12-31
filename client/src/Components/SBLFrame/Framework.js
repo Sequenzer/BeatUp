@@ -7,6 +7,8 @@ import GameLog from "./Gamelog";
 
 const FrameWork = (props) => {
   const settingsRef = useRef(null);
+  const inputRef = useRef(null);
+  const chatEndRef = useRef(null);
   console.log(props.gameboardRef);
 
   return (
@@ -22,7 +24,7 @@ const FrameWork = (props) => {
         setvalue={props.setvalue}
         newstack={false}
       />
-      <GameLog />
+      <GameLog chatStates={props.chatStates} />
     </div>
   );
 };

@@ -107,18 +107,12 @@ function Navbar(props) {
       <div className="left">
         <div className="logoBlock">
           <ChessLogo className="icon" href="/" />
-          <StyledLink
-            className="homebtn"
-            to="/"
-            onClick={() => {
-              props.setBg(true);
-            }}
-          >
+          <StyledLink className="homebtn" to="/">
             Beat <br /> Up
           </StyledLink>
         </div>
         <div className="navLinks">
-          <StyledItem
+          {/* <StyledItem
             content={"TicTacToe"}
             to="/TTT"
             fullpage={true}
@@ -144,23 +138,11 @@ function Navbar(props) {
                 bg_shown={props.bg_shown}
                 setBg={props.setBg}
               />
-            ))}
+            ))} */}
         </div>
       </div>
       <div className="right">
-        {Array(3)
-          .fill(1)
-          .map((el, i) => (
-            <StyledItem
-              key={i}
-              number={i}
-              content={"Lobby"}
-              to="/createLobby"
-              fullpage={true}
-              bg_shown={props.bg_shown}
-              setBg={props.setBg}
-            />
-          ))}
+        <StyledItem content={"Lobby"} to="/createLobby" fullpage={true} />
       </div>
     </div>
   );
@@ -173,7 +155,6 @@ function Item(props) {
         to={props.to}
         style={{ textDecoration: "none" }}
         onClick={(ev) => {
-          props.setBg(!props.fullpage);
           if (props.onClick) {
             props.onClick(ev);
           }

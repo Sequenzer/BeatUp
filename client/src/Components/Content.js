@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Test from "../assets/wide-cafe.jpg";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import TicTacToeGame from "../games/TacTacToe/TicTacToe.js";
 import Liar from "../games/Liar/Liar.js";
 import StyledNewGame from "../Components/NewGame.js";
@@ -36,17 +36,6 @@ const StyledContent = styled(ContentPage)`
       props.bg_shown ? "circle(90% at 0 100%)" : "circle(0% at 0 100%)"};
     transition: clip-path 0.5s linear;
   }
-  .bgio-client {
-    height: 100%;
-    grid-column: 2/4;
-    grid-row: 1/4;
-    //animation: 2s linear 0s 1 slideToMiddle;
-    //overflow: hidden;
-    display: inline-block;
-  }
-  .bgio-client > div {
-    width: 100%;
-  }
 `;
 const StyledEmptyPage = styled(EmptyPage)`
   display: grid;
@@ -73,38 +62,37 @@ function ContentPage(props) {
   // let { path, url } = useRouteMatch();
   return (
     <div className={props.className}>
-      <div className="bg-img"></div>
-      <Switch>
-        <Route exact path="/">
-          <StyledEmptyPage Text="Home" />
-        </Route>
-        <Route path="/about">
-          <StyledEmptyPage Text="About" id="About" />
-        </Route>
-        <Route path="/TTT">
-          <TicTacToeGame bg_shown={props.bg_shown} />
-        </Route>
-        <Route path="/liar">
-          <Liar />
-        </Route>
-        <Route path="/createLobby">
-          <StyledNewGame
-            bg_shown={props.bg_shown}
-            setBg={props.setBg}
-            fullpage={true}
-          />
-        </Route>
-        <Route path={`/:LobbyID/Lobby`}>
-          <StyledLobbyScreen
-            bg_shown={props.bg_shown}
-            setBg={props.setBg}
-            fullpage={true}
-          />
-        </Route>
-        <Route path="/International">
-          <InternationalGame />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route exact path="/" element={<StyledEmptyPage Text="Home" />} />
+        <Route
+          path="/about"
+          element={<StyledEmptyPage Text="About" id="About" />}
+        />
+        <Route
+          path="/TTT"
+          element={<TicTacToeGame bg_shown={props.bg_shown} />}
+        />
+        <Route
+          path="/createLobby"
+          element={
+            <StyledNewGame
+              bg_shown={props.bg_shown}
+              setBg={props.setBg}
+              fullpage={true}
+            />
+          }
+        />
+        <Route
+          path={`/:LobbyID/*`}
+          element={
+            <StyledLobbyScreen
+              bg_shown={props.bg_shown}
+              setBg={props.setBg}
+              fullpage={true}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 }

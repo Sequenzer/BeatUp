@@ -75,7 +75,11 @@ function LiarUI(props) {
 
   return (
     <div className={props.className}>
-      <FrameWork cardwidth={cardwidth} gameboardRef={gameboardRef} />
+      <FrameWork
+        cardwidth={cardwidth}
+        gameboardRef={gameboardRef}
+        chatStates={props.chatStates}
+      />
       <ActionBar
         cardwidth={cardwidth}
         actionbarRef={actionbarRef}
