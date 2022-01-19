@@ -7,6 +7,7 @@ import Liar from "../games/Liar/Liar.js";
 import StyledNewGame from "../Components/NewGame.js";
 import InternationalGame from "../games/International/International.js";
 import StyledLobbyScreen from "./Lobby.js";
+import LandingPage from "./LandingPage.js";
 
 const StyledContent = styled(ContentPage)`
   display: grid;
@@ -63,7 +64,7 @@ function ContentPage(props) {
   return (
     <div className={props.className}>
       <Routes>
-        <Route exact path="/" element={<StyledEmptyPage Text="Home" />} />
+        <Route exact path="/" element={<LandingPage />} />
         <Route
           path="/about"
           element={<StyledEmptyPage Text="About" id="About" />}

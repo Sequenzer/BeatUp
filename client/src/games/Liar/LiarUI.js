@@ -30,6 +30,7 @@ const temphand = [
 function LiarUI(props) {
   const [cardwidth, setCardWidth] = useState(9);
   const [hand, setHand] = useState(temphand);
+  const [turn, setTurn] = useState(true);
   const settingsRef = useRef(null);
   const gameboardRef = {
     stack: useRef(null),
@@ -43,9 +44,17 @@ function LiarUI(props) {
   //Mount SortableJS
   useEffect(() => {
     var stack = Sortable.create(gameboardRef.stack.current, {
-      group: "game",
       animation: 150,
       direction: "horizontal",
+      group: {
+        name: "stack",
+        put: function (to, from, element) {
+          return allowedToPlay(to, from, element);
+        },
+      },
+      onAdd: (evt) => {
+        onplay(evt);
+      },
     });
     const sortable = Sortable.create(actionbarRef.hand.current, {
       animation: 150,
@@ -54,13 +63,12 @@ function LiarUI(props) {
       chosenClass: "chosen",
       selectedClass: "selected",
       group: {
-        name: "game",
+        name: "hand",
         put: function (to) {
-          return to.el.children.length < 4;
+          return turn;
         },
       },
       multiDrag: true,
-
       onEnd: (event) => {
         //Check if it's a legal move
       },
@@ -68,9 +76,19 @@ function LiarUI(props) {
   }, []);
 
   function onplay() {
-    //Cheack where it has been dropped
+    console.log("something was played");
+    console.log(props.G);
     //Check if it's a legal move
     //Send to engine
+  }
+  function allowedToPlay(to, from, element) {
+    var card = {
+      suit: element.getAttribute("suit"),
+      value: element.getAttribute("value"),
+    };
+    console.log(hand);
+    console.log(card);
+    return to.el.children.length < 4 && turn;
   }
 
   return (

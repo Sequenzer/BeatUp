@@ -6,11 +6,6 @@ import GameBoard from "./Gameboard";
 import GameLog from "./Gamelog";
 
 const FrameWork = (props) => {
-  const settingsRef = useRef(null);
-  const inputRef = useRef(null);
-  const chatEndRef = useRef(null);
-  console.log(props.gameboardRef);
-
   return (
     <div className={props.className}>
       <Settings />

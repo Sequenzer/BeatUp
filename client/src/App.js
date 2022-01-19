@@ -6,6 +6,7 @@ import StyledContent from "./Components/Content";
 import Bungee from "./assets/Bungee-Regular.ttf";
 import Roboto from "./assets/Roboto-Regular.ttf";
 import Volkhov from "./assets/Volkhov-Bold.ttf";
+import BungeeInline from "./assets/BungeeInline-Regular.ttf";
 import { useLocation } from "react-router-dom";
 
 const theme = {
@@ -13,7 +14,7 @@ const theme = {
   secondary: "#F3EBE9",
   secDark: "#262730",
   secLight: "#373841",
-  white: "#fffff4",
+  white: "#FEFEF5",
   green: "#05381E",
   blue: "#A2DBFA",
   chatgreen: "#7cc88d",
@@ -22,14 +23,23 @@ const theme = {
   textFont: "roboto,sans-serif",
   cardFont: "Volkhov,serif",
   titleFont: "bungee,sans-serif",
+  alttitleFont: "bungee inline, cursive",
   navheight: "3rem",
   footheight: "1fr",
   boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.75);",
 };
 const GlobalStyle = createGlobalStyle`
+
 @font-face {
     font-family: 'Bungee';
     src: url(${Bungee}) format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: auto;
+  }
+  @font-face {
+    font-family: 'Bungee Inline';
+    src: url(${BungeeInline}) format('truetype');
     font-weight: 300;
     font-style: normal;
     font-display: auto;

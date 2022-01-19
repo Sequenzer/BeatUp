@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import Card from "../utils/CardComponent";
 import { Sortable, MultiDrag } from "sortablejs";
@@ -8,7 +8,7 @@ const CardSlot = React.forwardRef((props, ref) => {
   //get suit and value of the card from props.hand
   var { suit, value } = props.hand[props.cardnumber];
   return (
-    <div className={props.className} ref={ref}>
+    <div className={props.className} ref={ref} suit={suit} value={value}>
       <Card suit={suit} value={value} width={props.width} className="card" />
     </div>
   );

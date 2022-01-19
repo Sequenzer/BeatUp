@@ -1,4 +1,5 @@
 import { Client } from "boardgame.io/react";
+import { Local } from "boardgame.io/multiplayer";
 import LiarUI from "./LiarUI.js";
 
 //All Cards
@@ -131,7 +132,8 @@ const LiarGame = Client({
   game: Liar,
   numPlayers: 3,
   board: LiarUI,
-  debug: false,
+  multiplayer: Local(),
+  debug: true,
 });
 
 export default LiarGame;
