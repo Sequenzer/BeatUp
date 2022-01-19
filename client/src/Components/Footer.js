@@ -40,21 +40,7 @@ const StyledFooter = styled(Footer)`
 function Footer(props) {
   return (
     <footer className={props.className}>
-      <div className="footer_lks_col1">
-        <a href="/">About Us</a>
-        <a href="/">Contact</a>
-        <a href="/">Blog</a>
-      </div>
-      <div className="footer_lks_col2">
-        <a href="/">About Us</a>
-        <a href="/">Contact</a>
-        <a href="/">Blog</a>
-      </div>
-      <div className="footer_lks_col3">
-        <a href="/">About Us</a>
-        <a href="/">Contact</a>
-        <a href="/">Blog</a>
-      </div>
+      <div className="footer_lks_col2">></div>
     </footer>
   );
 }

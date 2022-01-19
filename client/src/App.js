@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import { StyledNavbar } from "./Components/Navbar";
 import StyledFooter from "./Components/Footer";
-import StyledContent from "./Components/Content";
 import Bungee from "./assets/Bungee-Regular.ttf";
 import Roboto from "./assets/Roboto-Regular.ttf";
 import Volkhov from "./assets/Volkhov-Bold.ttf";
-import { useLocation } from "react-router-dom";
+import { ReactComponent as Logo } from "./assets/board-figure.svg";
 
 const theme = {
   primary: "#CFCFC9",
   secondary: "#F3EBE9",
   secDark: "#262730",
   secLight: "#373841",
-  white: "#fffff4",
+  white: "#FEFEF5",
   green: "#05381E",
   blue: "#A2DBFA",
   chatgreen: "#7cc88d",
@@ -23,10 +21,28 @@ const theme = {
   cardFont: "Volkhov,serif",
   titleFont: "bungee,sans-serif",
   navheight: "3rem",
-  footheight: "1fr",
+  footheight: "0.6fr",
   boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.75);",
 };
 const GlobalStyle = createGlobalStyle`
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+.logo {
+  width: auto;
+  height: 15vw;
+}
+p{
+  font-family: "Bungee", sans-serif;
+  width: 30vw;
+  font-size: 1.5rem;
+  text-align: center;
+}
 @font-face {
     font-family: 'Bungee';
     src: url(${Bungee}) format('truetype');
@@ -62,14 +78,17 @@ body {
 `;
 
 function App() {
-  var location = useLocation().pathname;
-  const [bg_shown, setBg] = useState(location === "/");
-
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <StyledNavbar setBg={setBg} bg_shown={bg_shown} />
-      <StyledContent bg_shown={bg_shown} setBg={setBg} />
+      <div className="main">
+        <Logo className="logo" />
+        <p>
+          This Site is still under construction.
+          <b /> Please check back later for updates.
+        </p>
+      </div>
+
       <StyledFooter />
     </ThemeProvider>
   );
