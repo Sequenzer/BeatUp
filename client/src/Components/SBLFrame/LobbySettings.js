@@ -7,7 +7,6 @@ import {
 } from "../utils/Basic-Components";
 
 function Settings(props) {
-  console.log(props.game === "liar");
   const [selected, setSelected] = useState(undefined);
 
   const handleOptionClick = (ev, params) => {
@@ -94,8 +93,10 @@ function Settings(props) {
           </Button>
           {selected === "players" ? (
             <ul className="ctx-menu">
-              {props.users.map((user) => (
-                <li className="ctx-item">{user.username}</li>
+              {props.users.map((user, i) => (
+                <li key={i} className="ctx-item">
+                  {user.username}
+                </li>
               ))}
             </ul>
           ) : null}

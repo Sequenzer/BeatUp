@@ -31,7 +31,6 @@ function LiarUI(props) {
   const [cardwidth, setCardWidth] = useState(9);
   const [hand, setHand] = useState(temphand);
   const [turn, setTurn] = useState(true);
-  const settingsRef = useRef(null);
   const gameboardRef = {
     stack: useRef(null),
     lie: useRef(null),
@@ -41,6 +40,10 @@ function LiarUI(props) {
     hand: useRef(null),
     cardRef: useRef([]),
   };
+  //Set MatchID and PlayerID
+
+  console.log("hello there");
+
   //Mount SortableJS
   useEffect(() => {
     var stack = Sortable.create(gameboardRef.stack.current, {

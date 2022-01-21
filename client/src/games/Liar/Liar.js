@@ -1,7 +1,3 @@
-import { Client } from "boardgame.io/react";
-import { Local } from "boardgame.io/multiplayer";
-import LiarUI from "./LiarUI.js";
-
 //All Cards
 var cards = [];
 ["Club", "Diamond", "Heart", "Spade"].forEach((suit) => {
@@ -38,6 +34,7 @@ function shuffle(array) {
 var scards = shuffle(cards);
 
 const Liar = {
+  name: "liar",
   setup: (ctx) => {
     return {
       lastValue: undefined,
@@ -128,12 +125,4 @@ function hasValue(card, value) {
   return regex.test(card);
 }
 
-const LiarGame = Client({
-  game: Liar,
-  numPlayers: 3,
-  board: LiarUI,
-  multiplayer: Local(),
-  debug: true,
-});
-
-export default LiarGame;
+export default Liar;

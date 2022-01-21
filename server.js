@@ -1,12 +1,25 @@
-const express = require("express");
+import dotenv from "dotenv";
 
-const localtunnel = require("localtunnel");
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
+import localtunnel from "localtunnel";
+
+import registerLobbyhandlers from "./server/lobby.js";
+
+import gameServer from "./server/games/liar.js";
+
+dotenv.config();
 const port = process.env.PORT || 5000;
-const app = express();
+const gamePort = 4000;
+
+const io = require("socket.io")(port);
 
 (async () => {
-  const tunnel = await localtunnel({ port: 3000, subdomain: "yellow-emu-15" });
+  const tunnel = await localtunnel({
+    port: 3000,
+    subdomain: "yellow-emu-15-client",
+  });
 
   // the assigned public url for your tunnel
   // i.e. https://abcdefgjhij.localtunnel.me
@@ -16,9 +29,10 @@ const app = express();
     // tunnels are closed
   });
 })();
+
 (async () => {
   const tunnel = await localtunnel({
-    port: 5000,
+    port: port,
     subdomain: "yellow-emu-15-server",
   });
 
@@ -30,78 +44,34 @@ const app = express();
     // tunnels are closed
   });
 })();
+(async () => {
+  const tunnel = await localtunnel({
+    port: gamePort,
+    subdomain: "yellow-emu-15-games",
+  });
 
-const io = require("socket.io")(port);
+  // the assigned public url for your tunnel
+  // i.e. https://abcdefgjhij.localtunnel.me
+  console.log(tunnel.url);
 
-var users = [];
-var rooms = [];
+  tunnel.on("close", () => {
+    // tunnels are closed
+  });
+})();
 
-io.on("connection", function (socket) {
-  console.log("a user connected", socket.id);
-  socket.on("joinRoom", ({ username, room }) => {
-    var user = join_user(socket.id, username, room);
-    socket.join(user.room);
-    socket.emit("message", {
-      user: user.username,
-      text: `Welcome "${user.username}"`,
-    });
-    socket.broadcast
-      .to(user.room)
-      .emit("newUser", { user: user.username, text: "has joined" });
-  });
-  socket.on("chat", (text) => {
-    var user = getById(socket.id);
-    socket.broadcast.to(user.room).emit("message", {
-      user: user.username,
-      text: text,
-    });
-  });
-  socket.on("requestUsers", ({ room }) => {
-    var user = getById(socket.id);
-    socket.emit(
-      "users",
-      users.filter((user) => user.room === room)
-    );
-  });
-  socket.on("requestStart", ({ game, room }) => {
-    console.log("requestStart", game, room);
-    io.to(room).emit("gameStarts", { game });
-  });
-  socket.on("disconnect", () => {
-    var user = getById(socket.id);
-    if (user) {
-      io.to(user.room).emit("userLeft", {
-        user: user.username,
-        text: "has left",
-      });
-      remove_user(socket.id);
-    }
-  });
-  function join_user(id, username, room) {
-    socket.join(room);
-    users.push({
-      id: id,
-      username: username,
-      room: room,
-    });
-    return {
-      id: id,
-      username: username,
-      room: room,
-    };
-  }
-});
+//Track users and rooms
 
-function getById(id) {
-  var user = users.find((user) => user.id === id);
-  return user;
-}
-function remove_user(id) {
-  var user = getById(id);
-  if (user) {
-    users = users.filter((user) => user.id !== id);
-  }
-  return user;
-}
+//Register handler for a new user
+
+const onConnect = (socket) => {
+  console.log("New user connected", socket.id);
+  registerLobbyhandlers(io, socket);
+};
+
+io.on("connection", onConnect);
+
+//Run Game Server
+
+gameServer.run(gamePort);
 
 //app.listen(port, () => console.log(`Server started on Port ${port}`));

@@ -10,13 +10,17 @@ import {
   Routes,
 } from "react-router-dom";
 import io from "socket.io-client";
+import { LobbyClient } from "boardgame.io/client";
 import { generateCombination } from "gfycat-style-urls";
-import { push } from "gfycat-style-urls/adjectives";
-import Liar from "../games/Liar/Liar";
+import LiarClient from "../games/Liar/LiarClient";
 import International from "../games/International/International";
 
 var socketPath = "https://yellow-emu-15-server.loca.lt";
 const socket = io(socketPath, { transports: ["websocket"] });
+const bgiolobby = new LobbyClient({
+  server: "https://yellow-emu-15-games.loca.lt",
+  transports: ["websocket"],
+});
 
 function LobbyScreen(props) {
   const [selectedOption, setSelected] = useState(undefined);
@@ -24,6 +28,10 @@ function LobbyScreen(props) {
   const [users, setUsers] = useState([]);
   const [game, setGame] = useState("liar");
   const [username, setName] = useState(generateCombination(0));
+
+  const [matchID, setMatchID] = useState(undefined);
+  const [playerID, setPlayerID] = useState(undefined);
+  const [credentials, setCredentials] = useState(undefined);
   const navigate = useNavigate();
 
   const inputRef = useRef(null);
@@ -33,32 +41,52 @@ function LobbyScreen(props) {
 
   useEffect(() => {
     socket.emit("joinRoom", { username, room });
-    socket.emit("requestUsers", { room });
   }, [username, room]);
 
   useEffect(() => {
-    console.log(users);
-  }, [users]);
+    //log current match id and player id
+    console.log("matchID: " + matchID);
+    console.log("playerID: " + playerID);
+  }, [matchID, playerID]);
 
   useEffect(() => {
     socket.on("message", ({ user, text }) => {
       pushMessage(user, text);
     });
-    socket.on("users", (users) => {
-      setUsers(users);
+    socket.on("users", ({ usersInRoom }) => {
+      console.log("Users: " + usersInRoom);
+      setUsers(usersInRoom);
     });
-    socket.on("newUser", ({ user, text }) => {
+    socket.on("joinedRoom", ({ room, usersInRoom }) => {
+      setUsers(usersInRoom);
+    });
+    socket.on("userChange", ({ user, text, usersInRoom }) => {
       pushMessage(user, text);
-      socket.emit("requestUsers", { room });
+      setUsers(usersInRoom);
     });
-    socket.on("userLeft", ({ user, text }) => {
-      pushMessage(user, text);
-      socket.emit("requestUsers", { room });
+    socket.on("gameStarts", function ({ game, matchID, playerID }) {
+      console.log(
+        "Server started a Game, Game: " + game + " MatchID: " + matchID,
+        playerID
+      );
+      setMatchID(matchID);
+      setPlayerID(playerID);
+
+      joinGame(game, matchID, playerID);
     });
-    socket.on("gameStarts", ({ game }) => {
-      navigate(`/${room}/${game}`);
+  }, [bgiolobby, navigate, room, username]);
+
+  async function joinGame(game, matchID, playerID) {
+    console.log("Joining Game: " + game + " MatchID: " + matchID);
+    const { playerCredentials } = await bgiolobby.joinMatch(game, matchID, {
+      playerID: playerID,
+      playerName: username,
     });
-  }, [socket]);
+    setCredentials(playerCredentials);
+    console.log("PlayerCredentials: " + playerCredentials);
+
+    navigate(`/${room}/${game}`);
+  }
 
   const handleOptionClick = (ev, params) => {
     if (selectedOption === params.value) {
@@ -70,7 +98,7 @@ function LobbyScreen(props) {
   function handleSubmit(ev) {
     console.log("submit", inputRef.current.value);
     if (inputRef.current.value !== "") {
-      socket.emit("chat", inputRef.current.value);
+      socket.emit("userMessage", inputRef.current.value);
       pushMessage(username, inputRef.current.value);
     }
     inputRef.current.value = "";
@@ -86,8 +114,15 @@ function LobbyScreen(props) {
       setGame(value);
     }
   }
-  function handleStart(ev) {
-    socket.emit("requestStart", { game, room });
+  async function handleStart(ev) {
+    console.log("start", users.length);
+    const { matchID } = await bgiolobby.createMatch("liar", {
+      numPlayers: users.length,
+    });
+    console.log("Requesting game start", matchID, socket);
+    socket.emit("requestStart", { game, room, matchID });
+
+    console.log(matchID);
   }
 
   var chatStates = {
@@ -117,10 +152,28 @@ function LobbyScreen(props) {
             </React.Fragment>
           }
         />
-        <Route path="/liar" element={<Liar chatStates={chatStates} />} />
+        <Route
+          path="/liar"
+          element={
+            <LiarClient
+              chatStates={chatStates}
+              playerID={playerID} // Should probably check if playerID is undefined
+              matchID={matchID} // Should probably check if matchID is undefined
+              credentials={credentials}
+              debug={true}
+            />
+          }
+        />
         <Route
           path="/international"
-          element={<International chatStates={chatStates} />}
+          element={
+            <International
+              chatStates={chatStates}
+              playerID={playerID}
+              matchID={matchID}
+              credentials={credentials}
+            />
+          }
         />
       </Routes>
     </div>
