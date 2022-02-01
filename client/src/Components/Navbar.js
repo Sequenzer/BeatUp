@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import { ReactComponent as ChessLogo } from "../assets/board-figure.svg";
-import { ReactComponent as BeautUpLogo } from "../assets/BeatUpLogo2.svg";
-import { ReactComponent as Settings } from "../assets/settings.svg";
+import Settings from "./utils/SettingsLogo";
+import GlobalSettings from "./GlobalSettings";
+
+import { BeatUpLogo } from "./utils/BeatUpLogo";
+import { utils } from "sortablejs";
 
 const StyledLink = styled(Link)`
   color: inherit;
@@ -22,7 +24,6 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledNavbar = styled(Navbar)`
-  background-color: ${(props) => props.theme.white};
   grid-row: 2/3;
   grid-column: 1/3;
   width: 100%;
@@ -47,43 +48,52 @@ const StyledNavbar = styled(Navbar)`
     width: auto;
     height: 50px;
   }
-  .homebtn {
-    margin-left: -0.5em;
-  }
   .settings {
     width: auto;
     height: 4vh;
-    fill: ${(props) => props.theme.black};
+    z-index: 10;
+    filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.25))
+      drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.2))
+      drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.15))
+      drop-shadow(0px 8px 8px rgba(0, 0, 0, 0.1))
+      drop-shadow(0px 16px 16px rgba(0, 0, 0, 0.05));
     :hover {
       cursor: pointer;
     }
   }
   .right {
     display: flex;
-    align-items: center;
     justify-content: flex-end;
+    align-items: flex-start;
   }
   .logoBlock {
-    background: ${(props) => props.theme.primary};
+  }
+  .homebtn {
+    background-color: ${(props) => props.theme.darkShade};
     margin-right: 2vw;
     height: 3rem;
+    width: 2.3rem;
     line-height: 1rem;
-    padding: 0 2px;
-    display: flex;
-    align-items: center;
-    border-radius: 0.5rem 0.1rem;
+    position: relative;
+    border-radius: 0.6rem 0.1rem;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.2),
       0px 4px 4px rgba(0, 0, 0, 0.15), 0px 8px 8px rgba(0, 0, 0, 0.1),
       0px 16px 16px rgba(0, 0, 0, 0.05);
     :hover {
-      background-color: ${(props) => props.theme.secondary};
       cursor: pointer;
+      background-color: ${(props) => props.theme.lightShade};
     }
     :active {
       box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.15),
         inset 0px 2px 2px rgba(0, 0, 0, 0.2),
         inset 0px 1px 1px rgba(0, 0, 0, 0.25);
     }
+  }
+  .logo {
+    position: absolute;
+    width: auto;
+    height: 100%;
+    left: calc(50% - 3em / 2);
   }
 `;
 
@@ -112,19 +122,35 @@ const StyledItem = styled(Item)`
 `;
 
 function Navbar(props) {
+  const [Logo, punchLogo] = useState(false);
+
   return (
     <div className={props.className}>
       <div className="left">
-        <div className="logoBlock">
-          <StyledLink className="homebtn" to="/">
-            <BeautUpLogo className="icon" href="/" />
-          </StyledLink>
-        </div>
+        <StyledLink
+          className="homebtn"
+          to="/"
+          onMouseEnter={() => punchLogo(true)}
+          onMouseLeave={() => punchLogo(false)}
+        >
+          <BeatUpLogo light={!Logo} className="logo" />
+        </StyledLink>
         <div className="navLinks"></div>
       </div>
       <div className="right">
-        <Settings className="icon settings" href="/" />
-        {/* <StyledItem content={"Lobby"} to="/createLobby" fullpage={true} /> */}
+        <Settings
+          className="settings"
+          activeSettings={props.activeSettings}
+          onClick={() => {
+            props.setActiveSettings(!props.activeSettings);
+          }}
+        />
+        {!props.activeSettings ? (
+          <GlobalSettings
+            username={props.username}
+            handleNameChange={props.handleNameChange}
+          />
+        ) : null}
       </div>
     </div>
   );

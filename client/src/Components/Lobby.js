@@ -19,7 +19,6 @@ var socketPath = "https://yellow-emu-15-server.loca.lt";
 const socket = io(socketPath, { transports: ["websocket"] });
 const bgiolobby = new LobbyClient({
   server: "https://yellow-emu-15-games.loca.lt",
-  transports: ["websocket"],
 });
 
 function LobbyScreen(props) {
@@ -27,7 +26,8 @@ function LobbyScreen(props) {
   const [chatLog, setChatLog] = useState([]);
   const [users, setUsers] = useState([]);
   const [game, setGame] = useState("liar");
-  const [username, setName] = useState(generateCombination(0));
+
+  var username = props.username;
 
   const [matchID, setMatchID] = useState(undefined);
   const [playerID, setPlayerID] = useState(undefined);

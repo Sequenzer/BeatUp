@@ -28,9 +28,12 @@ const temphand = [
 ];
 
 function LiarUI(props) {
+  console.log("LiarUI props: ", props);
+
   const [cardwidth, setCardWidth] = useState(9);
-  const [hand, setHand] = useState(temphand);
-  const [turn, setTurn] = useState(true);
+
+  var hand = props.G.hand[props.playerID];
+  var turn = props.ctx.currentPlayer === props.playerID;
   const gameboardRef = {
     stack: useRef(null),
     lie: useRef(null),
@@ -78,19 +81,53 @@ function LiarUI(props) {
     });
   }, []);
 
-  function onplay() {
+  function onplay(evt) {
     console.log("something was played");
-    console.log(props.G);
+    console.log(evt);
+    var play = {
+      value: evt.item.getAttribute("value"),
+      ids: [],
+    };
+
+    if (evt.items.length > 0) {
+      evt.items.forEach((item) => {
+        var card = {
+          suit: item.getAttribute("suit"),
+          value: item.getAttribute("value"),
+        };
+        console.log("items");
+        console.log(
+          "card: ",
+          card,
+          hand.filter(
+            (ele) => ele.suit === card.suit && ele.value === card.value
+          )
+        );
+        console.log(hand);
+        play.ids.push(hand.indexOf(card));
+      });
+    } else {
+      var card = {
+        suit: evt.item.getAttribute("suit"),
+        value: evt.item.getAttribute("value"),
+      };
+      console.log(
+        "card: ",
+        card,
+        hand.filter((ele) => ele.suit === card.suit && ele.value === card.value)
+      );
+      console.log(hand);
+      play.ids.push(hand.indexOf(card));
+    }
     //Check if it's a legal move
     //Send to engine
+    props.moves.playCard(play);
   }
   function allowedToPlay(to, from, element) {
     var card = {
       suit: element.getAttribute("suit"),
       value: element.getAttribute("value"),
     };
-    console.log(hand);
-    console.log(card);
     return to.el.children.length < 4 && turn;
   }
 
@@ -101,12 +138,7 @@ function LiarUI(props) {
         gameboardRef={gameboardRef}
         chatStates={props.chatStates}
       />
-      <ActionBar
-        cardwidth={cardwidth}
-        actionbarRef={actionbarRef}
-        hand={hand}
-        setHand={setHand}
-      >
+      <ActionBar cardwidth={cardwidth} actionbarRef={actionbarRef} hand={hand}>
         {" "}
       </ActionBar>
     </div>

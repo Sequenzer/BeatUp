@@ -14,29 +14,10 @@ const StyledContent = styled(ContentPage)`
   min-height: 0;
   grid-template-columns: 3% auto auto 3%;
   grid-template-rows: 50% 50%;
-  grid-row: 3/4;
+  grid-row: 3/5;
   grid-column: 1/3;
   //overflow: hidden;
   clip: rect(auto, auto, auto, auto);
-
-  @keyframes slideToMiddle {
-    0% {
-      transform: translateX(70%);
-    }
-    100% {
-      transform: translateX(0%);
-    }
-  }
-
-  .bg-img {
-    background: url(${process.env.PUBLIC_URL + Test});
-    grid-column: 1/3;
-    grid-row: 1/3;
-    background-size: 75vw 100%;
-    clip-path: ${(props) =>
-      props.bg_shown ? "circle(90% at 0 100%)" : "circle(0% at 0 100%)"};
-    transition: clip-path 0.5s linear;
-  }
 `;
 const StyledEmptyPage = styled(EmptyPage)`
   display: grid;
@@ -61,6 +42,7 @@ const StyledEmptyPage = styled(EmptyPage)`
 
 function ContentPage(props) {
   // let { path, url } = useRouteMatch();
+
   return (
     <div className={props.className}>
       <Routes>
@@ -88,8 +70,7 @@ function ContentPage(props) {
           element={
             <StyledLobbyScreen
               bg_shown={props.bg_shown}
-              setBg={props.setBg}
-              fullpage={true}
+              username={props.username}
             />
           }
         />
