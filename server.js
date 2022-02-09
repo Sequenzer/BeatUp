@@ -7,7 +7,7 @@ import localtunnel from "localtunnel";
 
 import registerLobbyhandlers from "./server/lobby.js";
 
-import gameServer from "./server/games/liar.js";
+import gameServer from "./server/gameServer.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;

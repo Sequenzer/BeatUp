@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import Test from "../assets/wide-cafe.jpg";
 import { Routes, Route } from "react-router-dom";
 import TicTacToeGame from "../games/TacTacToe/TicTacToe.js";
-import Liar from "../games/Liar/Liar.js";
+
 import StyledNewGame from "../Components/NewGame.js";
 import InternationalGame from "../games/International/International.js";
 import StyledLobbyScreen from "./Lobby.js";
@@ -51,29 +51,12 @@ function ContentPage(props) {
           path="/about"
           element={<StyledEmptyPage Text="About" id="About" />}
         />
-        <Route
-          path="/TTT"
-          element={<TicTacToeGame bg_shown={props.bg_shown} />}
-        />
+        <Route path="/TTT" element={<TicTacToeGame />} />
         <Route
           path="/createLobby"
-          element={
-            <StyledNewGame
-              bg_shown={props.bg_shown}
-              setBg={props.setBg}
-              fullpage={true}
-            />
-          }
+          element={<StyledNewGame setBg={props.setBg} fullpage={true} />}
         />
-        <Route
-          path={`/:LobbyID/*`}
-          element={
-            <StyledLobbyScreen
-              bg_shown={props.bg_shown}
-              username={props.username}
-            />
-          }
-        />
+        <Route path={`/:LobbyID/*`} element={<StyledLobbyScreen />} />
       </Routes>
     </div>
   );

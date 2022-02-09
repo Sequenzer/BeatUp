@@ -14,18 +14,6 @@ import { process_params } from "express/lib/router";
 // var temphand = ["Club1", "Diamond2", "Heart3", "Heart1"];
 
 //Example set of 10 Cards
-const temphand = [
-  { suit: "Clover", value: "A" },
-  { suit: "Diamond", value: "2" },
-  { suit: "Heart", value: "3" },
-  { suit: "Pike", value: "4" },
-  { suit: "Clover", value: "5" },
-  { suit: "Diamond", value: "6" },
-  { suit: "Heart", value: "7" },
-  { suit: "Pike", value: "8" },
-  { suit: "Clover", value: "9" },
-  { suit: "Diamond", value: "10" },
-];
 
 function LiarUI(props) {
   console.log("LiarUI props: ", props);

@@ -89,7 +89,7 @@ const StyledStringInput = styled(StringInput).attrs((props) => ({
       inset 2px 2px 2px rgba(0, 0, 0, 0.2);
     background-color: ${(props) => props.theme.lightShade};
     font-size: ${(props) => props.height * 0.7}px;
-    font-family: ${(props) => props.theme.textfont};
+    font-family: ${(props) => props.theme.textFont};
     font-style: normal;
     font-weight: bold;
     line-height: 16px;
@@ -114,28 +114,34 @@ function Slider(props) {
 const StyledSlider = styled(Slider).attrs((props) => ({
   height: props.height || ((props.width * 1) / 10) | 20,
   width: props.width || (props.height * 10) | 200,
+  color: props.color || props.theme.lightAccent,
 }))`
   width: ${(props) => props.width}px;
 
   .slider {
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
-    height: ${(props) => props.height}px;
-    background-color: ${(props) => props.theme.darkAccent};
+    height: ${(props) => (props.height * 1) / 10}px;
+    background-color: ${(props) => props.theme.darkShade};
     outline: none;
     opacity: 0.7;
     transition: opacity 0.2s;
-  }
-  .slider:hover {
-    opacity: 1;
+    :hover {
+      opacity: 1;
+    }
   }
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: ${(props) => props.height * 0.5}px;
-    height: ${(props) => props.height * 0.5}px;
+    width: ${(props) => props.height}px;
+    height: ${(props) => props.height}px;
     border-radius: 50%;
-    background-color: ${(props) => props.theme.darkShade};
+    background-color: ${(props) => props.color};
     cursor: pointer;
+    :hover {
+      filter: ${(props) => props.theme.shadowFilter};
+    }
   }
   .slider::-moz-range-thumb {
     width: ${(props) => props.height * 0.5}px;
@@ -143,6 +149,42 @@ const StyledSlider = styled(Slider).attrs((props) => ({
     border-radius: 50%;
     background-color: ${(props) => props.theme.darkShade};
     cursor: pointer;
+  }
+`;
+
+function OptionChoice(props) {
+  switch (props.type) {
+    case "switch":
+      return <StyledSwitch {...props} />;
+    case "string":
+      return <StyledStringInput {...props} />;
+    case "slider":
+      return <StyledSlider {...props} />;
+    default:
+      return <div>{props.type}</div>;
+  }
+}
+
+function Option(props) {
+  return (
+    <div className={props.className}>
+      <div className="option_name">{props.name}</div>
+      <OptionChoice type={props.type} placeholder={props.placeholder} />
+    </div>
+  );
+}
+
+const StyledOption = styled(Option)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1em;
+  .option_name {
+    font-family: ${(props) => props.theme.textFont};
+    font-style: normal;
+    font-weight: bold;
   }
 `;
 
@@ -155,14 +197,16 @@ function GlobalSettings(props) {
 
   return (
     <div className={props.className}>
-      <form onSubmit={props.handleNameChange}>
-        <StyledSwitch width={100} />
-        <StyledStringInput width={200} placeholder={props.username} />
-        <StyledSlider
-          width={200}
-          value={slider}
-          onInput={(evt) => handleSlider(evt)}
+      <form onSubmit={props.handleNameChange} className="option_form">
+        <StyledOption
+          type="string"
+          name="Username:"
+          placeholder={props.username}
         />
+        <StyledOption type="switch" name="Memes:" />
+        <StyledOption type="switch" name="Option2:" />
+        <hr />
+        <StyledOption type="slider" name="Volume:" />
       </form>
     </div>
   );
@@ -176,6 +220,25 @@ const styledGlobalSettings = styled(GlobalSettings)`
   border-radius: 2em;
   background-color: ${(props) => props.theme.lightShade};
   opacity: 80%;
+
+  hr {
+    border: 0;
+    height: 0;
+    border-top: ${(props) => props.theme.darkShade} 1px solid;
+    opacity: 0.5;
+    width: 100%;
+    margin-bottom: 1em;
+  }
+
+  .option_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5em;
+    padding-top: 4em;
+    font-family: ${(props) => props.theme.textfont};
+  }
 `;
 
 export default styledGlobalSettings;

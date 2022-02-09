@@ -30,7 +30,7 @@ const theme = {
   chatgreen: "#7cc88d",
   chatblue: "#9AAAE6",
 
-  textFont: "roboto,sans-serif",
+  textFont: "Roboto,sans-serif",
   cardFont: "Volkhov,serif",
   titleFont: "bungee,sans-serif",
   alttitleFont: "bungee inline, cursive",

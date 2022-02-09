@@ -15,10 +15,19 @@ import { generateCombination } from "gfycat-style-urls";
 import LiarClient from "../games/Liar/LiarClient";
 import International from "../games/International/International";
 
+import LiarUI from "../games/Liar/LiarUI.js";
+import Liar from "../games/Liar/Liar.js";
+import { Client } from "boardgame.io/react";
+
 var socketPath = "https://yellow-emu-15-server.loca.lt";
 const socket = io(socketPath, { transports: ["websocket"] });
 const bgiolobby = new LobbyClient({
   server: "https://yellow-emu-15-games.loca.lt",
+});
+
+const LiarGameOffline = Client({
+  game: Liar,
+  board: LiarUI,
 });
 
 function LobbyScreen(props) {
@@ -164,6 +173,19 @@ function LobbyScreen(props) {
             />
           }
         />
+        <Route
+          path="/test"
+          element={
+            <LiarGameOffline
+              chatStates={chatStates}
+              playerID={"0"} // Should probably check if playerID is undefined
+              matchID={matchID} // Should probably check if matchID is undefined
+              credentials={credentials}
+              debug={true}
+            />
+          }
+        />
+
         <Route
           path="/international"
           element={
