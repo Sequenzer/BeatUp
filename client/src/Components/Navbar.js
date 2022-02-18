@@ -145,7 +145,7 @@ function Navbar(props) {
             props.setActiveSettings(!props.activeSettings);
           }}
         />
-        {!props.activeSettings ? (
+        {props.activeSettings ? (
           <GlobalSettings
             username={props.username}
             handleNameChange={props.handleNameChange}

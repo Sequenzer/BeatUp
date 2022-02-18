@@ -16,6 +16,7 @@ const ActionBar = (props) => {
       <HandArea
         hand={props.hand}
         setHand={props.setHand}
+        sortable={props.sortable}
         handsize={handsize}
         cardwidth={props.cardwidth}
         handareaRef={props.actionbarRef}

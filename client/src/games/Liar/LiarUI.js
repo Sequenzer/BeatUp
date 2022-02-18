@@ -3,24 +3,13 @@ import styled from "styled-components";
 
 import ActionBar from "../../Components/Actionbar/Actionbar";
 import FrameWork from "../../Components/SBLFrame/Framework";
-import { Sortable, MultiDrag, qux } from "sortablejs";
-import { process_params } from "express/lib/router";
 
-//Draggable import
-// import { gsap } from "gsap";
-// import Draggable from "gsap/Draggable";
-// gsap.registerPlugin(Draggable);
-
-// var temphand = ["Club1", "Diamond2", "Heart3", "Heart1"];
-
-//Example set of 10 Cards
+import Sortable, { MultiDrag } from "sortablejs";
 
 function LiarUI(props) {
-  console.log("LiarUI props: ", props);
-
   const [cardwidth, setCardWidth] = useState(9);
-
-  var hand = props.G.hand[props.playerID];
+  const [hand, setHand] = useState(props.G.hand[props.playerID]);
+  const [stack, setStack] = useState([]);
   var turn = props.ctx.currentPlayer === props.playerID;
   const gameboardRef = {
     stack: useRef(null),
@@ -31,15 +20,16 @@ function LiarUI(props) {
     hand: useRef(null),
     cardRef: useRef([]),
   };
-  //Set MatchID and PlayerID
 
-  console.log("hello there");
+  //Set MatchID and PlayerID
 
   //Mount SortableJS
   useEffect(() => {
     var stack = Sortable.create(gameboardRef.stack.current, {
       animation: 150,
       direction: "horizontal",
+      multiDrag: true,
+
       group: {
         name: "stack",
         put: function (to, from, element) {
@@ -47,20 +37,24 @@ function LiarUI(props) {
         },
       },
       onAdd: (evt) => {
-        onplay(evt);
+        onPlay(evt);
       },
     });
-    const sortable = Sortable.create(actionbarRef.hand.current, {
+    const actionbar = Sortable.create(actionbarRef.hand.current, {
       animation: 150,
       direction: "horizontal",
       ghostClass: "ghost",
       chosenClass: "chosen",
       selectedClass: "selected",
+      onSelect: (evt) => {
+        if (evt.items.length > 4) {
+          Sortable.utils.deselect(evt.item);
+        }
+      },
       group: {
+        pull: "clone",
         name: "hand",
-        put: function (to) {
-          return turn;
-        },
+        put: false,
       },
       multiDrag: true,
       onEnd: (event) => {
@@ -69,11 +63,19 @@ function LiarUI(props) {
     });
   }, []);
 
-  function onplay(evt) {
-    console.log("something was played");
+  function onPlay(evt) {
+    console.log("Something was played.");
     console.log(evt);
+
+    function parseValue(string) {
+      if (isNaN(parseInt(string))) {
+        return string;
+      } else {
+        return parseInt(string);
+      }
+    }
     var play = {
-      value: evt.item.getAttribute("value"),
+      value: parseValue(evt.item.getAttribute("value")),
       ids: [],
     };
 
@@ -81,31 +83,24 @@ function LiarUI(props) {
       evt.items.forEach((item) => {
         var card = {
           suit: item.getAttribute("suit"),
-          value: item.getAttribute("value"),
+          value: parseValue(item.getAttribute("value")),
         };
-        console.log("items");
-        console.log(
-          "card: ",
-          card,
-          hand.filter(
+        play.ids.push(
+          hand.findIndex(
             (ele) => ele.suit === card.suit && ele.value === card.value
           )
         );
-        console.log(hand);
-        play.ids.push(hand.indexOf(card));
       });
     } else {
       var card = {
         suit: evt.item.getAttribute("suit"),
-        value: evt.item.getAttribute("value"),
+        value: parseValue(evt.item.getAttribute("value")),
       };
-      console.log(
-        "card: ",
-        card,
-        hand.filter((ele) => ele.suit === card.suit && ele.value === card.value)
+      play.ids.push(
+        hand.findIndex(
+          (ele) => ele.suit === card.suit && ele.value === card.value
+        )
       );
-      console.log(hand);
-      play.ids.push(hand.indexOf(card));
     }
     //Check if it's a legal move
     //Send to engine
@@ -125,8 +120,15 @@ function LiarUI(props) {
         cardwidth={cardwidth}
         gameboardRef={gameboardRef}
         chatStates={props.chatStates}
+        stack={stack}
+        setStack={setStack}
       />
-      <ActionBar cardwidth={cardwidth} actionbarRef={actionbarRef} hand={hand}>
+      <ActionBar
+        cardwidth={cardwidth}
+        actionbarRef={actionbarRef}
+        hand={hand}
+        setHand={setHand}
+      >
         {" "}
       </ActionBar>
     </div>
