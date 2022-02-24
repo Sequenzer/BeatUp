@@ -1,7 +1,7 @@
 import stlyed from "styled-components";
 
 const styledHomePage = stlyed(HomePage)`
-    background-color: green;
+    background-color: blue;
     stroke: black;
 `;
 
