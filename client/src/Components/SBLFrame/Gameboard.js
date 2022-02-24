@@ -147,7 +147,7 @@ const GameBoard = React.forwardRef((props, ref) => {
   return (
     <div className={props.className}>
       <StyledPlayerList height={75} players={players} />
-      <div className="stack" ref={props.gameboardRef.stack}></div>
+      <div className="stack" ref={props.gameboardRef.stack} />
       <StyledBtn name={"Liar!"} width={100} height={50} />
     </div>
   );

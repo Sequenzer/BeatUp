@@ -8,6 +8,7 @@ import StyledNewGame from "../Components/NewGame.js";
 import InternationalGame from "../games/International/International.js";
 import StyledLobbyScreen from "./Lobby.js";
 import LandingPage from "./LandingPage.js";
+import Wave from "./utils/wave";
 
 const StyledContent = styled(ContentPage)`
   display: grid;
@@ -47,6 +48,7 @@ function ContentPage(props) {
     <div className={props.className}>
       <Routes>
         <Route exact path="/" element={<LandingPage />} />
+        <Route exact path="/wave" element={<Wave />} />
         <Route
           path="/about"
           element={<StyledEmptyPage Text="About" id="About" />}

@@ -18,6 +18,7 @@ const FrameWork = (props) => {
         lastSuit={props.lastSuit}
         setvalue={props.setvalue}
         newstack={false}
+        turn={props.turn}
       />
       <GameLog chatStates={props.chatStates} />
     </div>

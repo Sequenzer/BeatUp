@@ -105,6 +105,7 @@ function LiarUI(props) {
     //Check if it's a legal move
     //Send to engine
     props.moves.playCard(play);
+    //remove card from hand
   }
   function allowedToPlay(to, from, element) {
     var card = {
@@ -122,6 +123,7 @@ function LiarUI(props) {
         chatStates={props.chatStates}
         stack={stack}
         setStack={setStack}
+        turn={turn}
       />
       <ActionBar
         cardwidth={cardwidth}
