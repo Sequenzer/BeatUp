@@ -43,54 +43,37 @@ const StyledLogBlock = styled(LogBlock)`
 `;
 
 const GameLog = (props) => {
-  const [chatLog, setChatLog] = useState([]);
-  const [name] = useState("Horst");
-  const [test, setTest] = useState(false);
-
-  const inputRef = useRef(null);
-  const chatEndRef = useRef(null);
-
   function scrollToBottom() {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    props.chatStates.chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }
   useEffect(() => {
     scrollToBottom();
-  }, [chatLog]);
+  }, [props.chatStates.chatLog]);
 
-  function handleSubmit(ev) {
-    console.log("submit", inputRef.current.value);
-    if (inputRef.current.value !== "") {
-      if (test) {
-        pushMessage("Horst", inputRef.current.value);
-        setTest(!test);
-      } else {
-        pushMessage("Peter", inputRef.current.value);
-        setTest(!test);
-      }
-    }
-    inputRef.current.value = "";
-    ev.preventDefault();
-  }
-  function pushMessage(author, value) {
-    setChatLog([...chatLog, { author, value }]);
-  }
   return (
     <div className={props.className}>
       <Header>Gamelog</Header>
       <ul className="log">
-        {chatLog.map((ele, i) => (
+        {props.chatStates.chatLog.map((ele, i) => (
           <StyledLogBlock
             key={i}
             author={ele.author}
-            isSelf={name === ele.author}
+            isSelf={props.chatStates.name === ele.author}
           >
             {ele.value}
           </StyledLogBlock>
         ))}
-        <li ref={chatEndRef} />
+        <li ref={props.chatStates.chatEndRef} />
       </ul>
-      <form className="ipt-frm" onSubmit={(ev) => handleSubmit(ev)}>
-        <input type="text" ref={inputRef} placeholder={"Put it in!"}></input>
+      <form
+        className="ipt-frm"
+        onSubmit={(ev) => props.chatStates.handleSubmit(ev)}
+      >
+        <input
+          type="text"
+          ref={props.chatStates.inputRef}
+          placeholder={"Type here!"}
+        ></input>
       </form>
     </div>
   );

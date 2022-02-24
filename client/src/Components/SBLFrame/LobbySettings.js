@@ -21,33 +21,52 @@ function Settings(props) {
     <div className={props.className}>
       <Header>Settings</Header>
       <ul>
-        <li className="restart">
+        <li className="start-game">
           <Button
             active={true}
             color="primary"
-            onClick={(ev) => handleOptionClick(ev, { value: "restart" })}
+            onClick={(ev) => props.handleStart(ev)}
           >
-            Restart
+            Let's Go
           </Button>
-          {selected === "restart" ? (
-            <ul className="ctx-menu">
-              <li className="ctx-item">Horst</li>
-              <li className="ctx-item">Horst</li>
-            </ul>
-          ) : null}
         </li>
 
-        <li className="history">
+        <li className="games">
           <Button
             color="primary"
-            onClick={(ev) => handleOptionClick(ev, { value: "history" })}
+            onClick={(ev) => handleOptionClick(ev, { value: "games" })}
           >
-            History
+            Games
           </Button>
-          {selected === "history" ? (
+          {selected === "games" ? (
             <ul className="ctx-menu">
-              <li className="ctx-item">Horst</li>
-              <li className="ctx-item">Horst</li>
+              <li
+                className={
+                  props.game === "liar"
+                    ? "ctx-item active"
+                    : "ctx-item inactive"
+                }
+                onClick={(ev) =>
+                  props.handleSelection(ev, { type: "game", value: "liar" })
+                }
+              >
+                Liar
+              </li>
+              <li
+                className={
+                  props.game === "international"
+                    ? "ctx-item active"
+                    : "ctx-item inactive"
+                }
+                onClick={(ev) =>
+                  props.handleSelection(ev, {
+                    type: "game",
+                    value: "international",
+                  })
+                }
+              >
+                International
+              </li>
             </ul>
           ) : null}
         </li>
@@ -65,17 +84,20 @@ function Settings(props) {
             </ul>
           ) : null}
         </li>
-        <li className="giveup">
+        <li className="players">
           <Button
             color="primary"
-            onClick={(ev) => handleOptionClick(ev, { value: "giveup" })}
+            onClick={(ev) => handleOptionClick(ev, { value: "players" })}
           >
-            Give Up!
+            Players
           </Button>
-          {selected === "giveup" ? (
+          {selected === "players" ? (
             <ul className="ctx-menu">
-              <li className="ctx-item">Horst</li>
-              <li className="ctx-item">Horst</li>
+              {props.users.map((user, i) => (
+                <li key={i} className="ctx-item">
+                  {user.username}
+                </li>
+              ))}
             </ul>
           ) : null}
         </li>
@@ -83,6 +105,7 @@ function Settings(props) {
     </div>
   );
 }
+
 const StyledSettings = styled(Settings)`
   grid-column: 1/3;
   grid-row: 1/2;
@@ -103,6 +126,7 @@ const StyledSettings = styled(Settings)`
       inset -8px 0px 8px rgba(0, 0, 0, 0.1);
   }
   li {
+    cursor: pointer;
     margin-bottom: 1em;
     display: flex;
     flex-direction: column;
@@ -123,6 +147,10 @@ const StyledSettings = styled(Settings)`
     align-items: center;
     flex-grow: 4;
   }
+  .ctx-item.active {
+    background-color:green;
+  }
+  
   .ctx-item {
     font-family: ${(props) => props.theme.textFont};
     margin-top: 0.2em;
@@ -130,7 +158,10 @@ const StyledSettings = styled(Settings)`
     background-color: ${(props) => props.theme.blue};
     width: 90%;
     border-radius: 2px;
+    :hover {
+      background-color: red;
   }
+  
   .ctx-item:first-child {
     margin-top: 0.5em;
   }

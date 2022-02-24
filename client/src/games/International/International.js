@@ -57,7 +57,6 @@ function shuffle(array) {
 }
 var shuffledDeck = shuffle(deck);
 var shuffledtable = shuffle(countrydeck);
-console.log(shuffledDeck);
 
 var seating = [
   {
@@ -109,7 +108,6 @@ var seating = [
     tables: [4],
   },
 ];
-console.log(seating);
 
 const International = {
   setup: (ctx) => {

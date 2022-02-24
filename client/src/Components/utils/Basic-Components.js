@@ -51,4 +51,16 @@ const StyledHeader = styled(Header)`
   grid-row: 1/2;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 `;
-export { StyledBtn, StyledHeader };
+
+const BoardBtn = (props) => {
+  const { name, onClick, className } = props;
+  return (
+    <div onClick={onClick} className={className}>
+      {name}
+    </div>
+  );
+};
+
+const StyledBoardBtn = styled(BoardBtn)``;
+
+export { StyledBtn, StyledHeader, StyledBoardBtn };

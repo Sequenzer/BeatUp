@@ -1,17 +1,30 @@
-import { Client } from "boardgame.io/react";
-import LiarUI from "./LiarUI.js";
-
 //All Cards
 var cards = [];
-["Club", "Diamond", "Heart", "Spade"].forEach((suit) => {
+["Clover", "Diamond", "Heart", "Pike"].forEach((suit) => {
   Array(10)
     .fill(1)
     .forEach((ele, i) => {
-      cards.push(suit + (i + 1));
+      cards.push({
+        suit: suit,
+        value: i + 2,
+      });
     });
-  cards.push(suit + "11Jack");
-  cards.push(suit + "12Queen");
-  cards.push(suit + "13King");
+  cards.push({
+    suit: suit,
+    value: "J",
+  });
+  cards.push({
+    suit: suit,
+    value: "Q",
+  });
+  cards.push({
+    suit: suit,
+    value: "K",
+  });
+  cards.push({
+    suit: suit,
+    value: "A",
+  });
 });
 
 //Shuffle cards
@@ -37,6 +50,7 @@ function shuffle(array) {
 var scards = shuffle(cards);
 
 const Liar = {
+  name: "liar",
   setup: (ctx) => {
     return {
       lastValue: undefined,
@@ -72,6 +86,7 @@ const Liar = {
       }
       input.ids.forEach((id) => {
         if (G.hand[ctx.currentPlayer][id] === undefined) {
+          console.log("what happened?", input, id);
           //Do nothing
         } else {
           var card = G.hand[ctx.currentPlayer][id];
@@ -115,7 +130,7 @@ function hasLied(G) {
   var l1 =
     G.stack
       .splice(G.stack.length - G.lastNum, G.lastNum)
-      .filter((ele) => hasValue(ele, G.lastSuit)).length !== G.lastNum;
+      .filter((ele) => hasValue(ele, G.lastvalue)).length !== G.lastNum;
   if (l1) {
     return true;
   } else {
@@ -123,15 +138,7 @@ function hasLied(G) {
   }
 }
 function hasValue(card, value) {
-  var regex = new RegExp(`^(?:(?!${value}).)*${value}(?!.*${value}).*$`);
-  return regex.test(card);
+  return card.value === value;
 }
 
-const LiarGame = Client({
-  game: Liar,
-  numPlayers: 3,
-  board: LiarUI,
-  debug: false,
-});
-
-export default LiarGame;
+export default Liar;

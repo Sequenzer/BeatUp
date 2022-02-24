@@ -5,6 +5,7 @@ import ButtonBox from "./Buttonbox";
 import HandArea from "./Handarea";
 
 const ActionBar = (props) => {
+  const handsize = props.hand.length;
   return (
     <div className={props.className}>
       <ButtonBox position="left">
@@ -12,7 +13,16 @@ const ActionBar = (props) => {
         <Button color="secDark">Aktion</Button>
         <Button color="secDark">Play Cards</Button>
       </ButtonBox>
-      <HandArea>{props.children}</HandArea>
+      <HandArea
+        hand={props.hand}
+        setHand={props.setHand}
+        sortable={props.sortable}
+        handsize={handsize}
+        cardwidth={props.cardwidth}
+        handareaRef={props.actionbarRef}
+      >
+        {props.children}
+      </HandArea>
       <ButtonBox position="right">
         <Button color="secDark">Aktion</Button>
         <Button color="secDark">Aktion</Button>
