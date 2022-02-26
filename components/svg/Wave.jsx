@@ -1,10 +1,9 @@
-import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 function Wave(props) {
-  let height = 500;
-  let width = 1000;
-  let nOfextrema = 2;
+  let height = props.height;
+  let width = props.width;
+  let nOfextrema = props.n;
 
   function createSegStr(hscale, vscale) {
     let segStr = "C";
@@ -33,7 +32,6 @@ function Wave(props) {
 
       let oldoffv = width - parseFloat(stringarr[stringarr.length - 11]);
       let oldoffh = height - parseFloat(stringarr[stringarr.length - 10]);
-      console.log(stringarr, oldoffh, oldoffv);
 
       segStr = ` ${parseInt(x)} ${parseInt(y)}` + segStr; // endpoint of first segment
       segStr = ` ${parseInt(x - offv)} ${parseInt(offh)}` + segStr; // define offsetpoint of endpoint
@@ -64,41 +62,43 @@ function Wave(props) {
   }
 
   return (
-    <svg id="visual" viewBox="0 0 2000 500" className={props.className}>
+    <svg
+      id="visual"
+      viewBox={`0 0 ${props.width} ${props.height}`}
+      maxWidth="100%"
+      width="auto"
+      height="auto"
+      maxHeight="110%"
+      preserveAspectRatio="none"
+      className={props.className}
+    >
       <defs>
         <symbol id="wave">
           <path
             d={`${createSegStr2()}`}
-            fill={props.fill ? props.fill : "#fefef5"}
             strokeLinecap="round"
             strokeLinejoin="miter"
           ></path>
         </symbol>
       </defs>
       <use xlinkHref="#wave" x="0" y="0" />
-      <use xlinkHref="#wave" x="1000" y="0" />
-      {/* <use
-        xlinkHref="#wave"
-        x="1"
-        y="0"
-        transform="translate(4000) scale(-1,1)"
-      />
-      <use xlinkHref="#wave" x="3998" y="0" />
-      <use
-        xlinkHref="#wave"
-        x="1"
-        y="0"
-        transform="translate(8000) scale(-1,1)"
-      /> */}
     </svg>
   );
 }
 
+const wavy = keyframes`
+  0%,100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(1vh) rotate(0.5deg);
+  }
+`;
+
 const styledWave = styled(Wave)`
-  /* grid-column: 1/5; */
-  height: 40vh;
+  filter: ${(props) => props.theme.filters.sharp};
   path {
-    fill: ${(props) => props.theme.lightShade};
+    fill: ${(props) => props.theme.colors.lightShade};
   }
 `;
 

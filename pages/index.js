@@ -1,12 +1,18 @@
-import stlyed from "styled-components";
+import styled from "styled-components";
 
-const styledHomePage = stlyed(HomePage)`
-    background-color: blue;
-    stroke: black;
-`;
+import Navbar from "../components/Navbar";
+import Content from "../components/Content";
+import Wave from "../components/svg/Wave";
 
-function HomePage(props) {
-  return <div className={props.className}>My Empty Next.js Page</div>;
+const styledBeatUp = styled(BeatUp)``;
+
+function BeatUp(props) {
+  return (
+    <>
+      <Navbar />
+      <Wave height={500} width={1000} n={5} />
+    </>
+  );
 }
 
-export default styledHomePage;
+export default styledBeatUp;

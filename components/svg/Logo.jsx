@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 function nsLogoNoPunch(props) {
@@ -24,7 +23,7 @@ function nsLogoNoPunch(props) {
 
 export const LogoNoPunch = styled(nsLogoNoPunch)`
   path {
-    fill: ${(props) => (props.light ? props.theme.lightShade : "black")};
+    fill: ${(props) => (props.light ? props.theme.colors.lightShade : "black")};
   }
 `;
 
@@ -109,13 +108,14 @@ function nsLogoPunch(props) {
 
 export const LogoPunch = styled(nsLogoPunch)`
   .explosion {
-    fill: ${(props) => props.theme.lightShade};
+    fill: ${(props) => props.theme.colors.lightShade};
   }
   .punch {
-    stroke: ${(props) => (props.light ? props.theme.lightShade : "black")};
+    stroke: ${(props) =>
+      props.light ? props.theme.colors.lightShade : "black"};
   }
   .figure {
-    fill: ${(props) => (props.light ? props.theme.lightShade : "black")};
+    fill: ${(props) => (props.light ? props.theme.colors.lightShade : "black")};
   }
   path {
   }

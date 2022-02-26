@@ -1,7 +1,6 @@
-import React from "react";
 import styled from "styled-components";
 
-function SettingsLogo(props) {
+function Gear(props) {
   return (
     <svg
       width="45"
@@ -21,15 +20,17 @@ function SettingsLogo(props) {
   );
 }
 
-const styledSettingsLogo = styled(SettingsLogo)`
+export default styled(Gear)`
   path {
     fill: ${(props) =>
-      props.activeSettings ? props.theme.darkShade : props.theme.lightShade};
-    stroke: ${(props) =>
-      props.activeSettings ? props.theme.darkShade : props.theme.lightShade};
-  }
+      props.activeSettings
+        ? props.theme.colors.darkShade
+        : props.theme.colors.lightShade};
+    /* stroke: ${(props) =>
+      props.activeSettings
+        ? props.theme.colors.darkShade
+        : props.theme.colors.lightShade};
+  } */
   :hover {
       cursor: pointer;
 `;
-
-export default styledSettingsLogo;
