@@ -1,6 +1,37 @@
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 
+import Layout from "../components/Layout";
+
 const GlobalStyle = createGlobalStyle`
+@font-face {
+    font-family: 'Bungee';
+    src: url("/fonts/Bungee-Regular.ttf") format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: auto;
+  }
+  @font-face {
+    font-family: 'BungeeInline';
+    src: url("/fonts/BungeeInline-Regular.ttf") format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: auto;
+  }
+  @font-face {
+    font-family: 'Roboto';
+    src: url("/fonts/Roboto-Regular.ttf") format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: auto;
+  }
+  @font-face {
+    font-family: 'Volkhov';
+    src: url("/fonts/Volkhov-Bold.ttf") format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: auto;
+  }
+
 html{
   background: ${(props) => props.theme.colors.primary};;
   display:block;
@@ -10,7 +41,6 @@ html{
 }
 
 body{
-  background-color:${(props) => props.theme.colors.primary};
   min-height:100vh;
   
   margin:0;
@@ -34,6 +64,7 @@ const theme = {
     title: "Bungee,sans-serif",
     text: "Roboto,sans-serif",
     card: "Volkhov,serif",
+    alttitle: "BungeeInline, cursive",
   },
   shadows: {
     sharp:
@@ -46,7 +77,9 @@ function MyApp({ Component, pageProps }) {
     <>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ThemeProvider>
     </>
   );

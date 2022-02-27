@@ -31,6 +31,8 @@ export default styled(Gear)`
         ? props.theme.colors.darkShade
         : props.theme.colors.lightShade};
   } */
-  :hover {
+    :hover {
       cursor: pointer;
+    }
+  }
 `;

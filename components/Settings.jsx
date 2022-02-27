@@ -12,11 +12,17 @@ function Switch(props) {
   );
 }
 
-const StyledSwitch = styled(Switch).attrs((props) => ({
-  height: props.height || (props.width * 0.4) | 20,
-  width: props.width || (props.height * 2.5) | 50,
-  radius: props.radius || (props.width * 0.1) | 5,
-}))`
+const StyledSwitch = styled(Switch).attrs((props) => {
+  let height = props.height || (props.width * 0.4) | 20,
+    width = props.width || (props.height * 2.5) | 50,
+    radius = props.radius || (props.width * 0.1) | 5;
+
+  return {
+    height: height,
+    width: width,
+    radius: radius,
+  };
+})`
   .switch {
     position: relative;
     display: inline-block;
@@ -74,12 +80,18 @@ function StringInput(props) {
   );
 }
 
-const StyledStringInput = styled(StringInput).attrs((props) => ({
-  height: props.height || ((props.width * 1) / 10) | 20,
-  width: props.width || (props.height * 10) | 200,
-  radius:
-    props.radius || ((props.height * 1) / 4) | ((props.width * 1) / 40) | 5,
-}))`
+const StyledStringInput = styled(StringInput).attrs((props) => {
+  let height = props.height || ((props.width * 1) / 10) | 20,
+    width = props.width || (props.height * 10) | 200,
+    radius =
+      props.radius || ((props.height * 1) / 4) | ((props.width * 1) / 40) | 5;
+
+  return {
+    height: height,
+    width: width,
+    radius: radius,
+  };
+})`
   .input {
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
@@ -111,11 +123,17 @@ function Slider(props) {
   );
 }
 
-const StyledSlider = styled(Slider).attrs((props) => ({
-  height: props.height || ((props.width * 1) / 10) | 20,
-  width: props.width || (props.height * 10) | 200,
-  color: props.color || props.theme.colors.lightAccent,
-}))`
+const StyledSlider = styled(Slider).attrs((props) => {
+  let height = props.height || ((props.width * 1) / 10) | 20,
+    width = props.width || (props.height * 10) | 200,
+    color = props.color || props.theme.colors.lightAccent;
+
+  return {
+    height: height,
+    width: width,
+    color: color,
+  };
+})`
   width: ${(props) => props.width}px;
 
   .slider {
