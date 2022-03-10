@@ -2,8 +2,8 @@ import styled, { keyframes } from "styled-components";
 
 import Head from "next/head";
 
-import Navbar from "./Navbar";
-import Background from "./Background";
+import Navbar from "components/Navbar";
+import Background from "components/Background";
 
 function Layout({ children }) {
   return (

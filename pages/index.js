@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
 
-import { BeatUpLogo as Logo } from "../components/svg/Logo";
+import { BeatUpLogo as Logo } from "components/svg/Logo";
 
-import { styledBtn as Btn } from "../components/Buttons";
+import { styledBtn as Btn } from "components/Buttons";
 
 function BeatUp(props) {
   // const Code = generateCombination(2, "-");

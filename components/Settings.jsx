@@ -1,5 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
+import useUser from "hooks/useUser";
+import fetchJson from "lib/fetch";
 
 function Switch(props) {
   return (
@@ -71,11 +73,7 @@ const StyledSwitch = styled(Switch).attrs((props) => {
 function StringInput(props) {
   return (
     <div className={props.className}>
-      <input
-        type="text"
-        placeholder={props.placeholder + "..."}
-        className="input"
-      />
+      <input type="text" placeholder={props.placeholder} className="input" maxLength="20"/>
     </div>
   );
 }
@@ -209,17 +207,37 @@ const StyledOption = styled(Option)`
 function GlobalSettings(props) {
   const [slider, setSlider] = useState(50);
 
+  const { user, mutateUser } = useUser();
+
+  function handleSubmit(ev) {
+    ev.preventDefault();
+    let newName = ev.target[0]?.value;
+    let body = {
+      username: newName,
+    };
+    mutateUser(
+      fetchJson("/api/login", {
+        method: "POST",
+        body: JSON.stringify(body),
+        header: {
+          "Content-Type": "application/json",
+        },
+      })
+    );
+    ev.target[0]?.value = "";
+  }
+
   const handleSlider = (e) => {
     setSlider(e.target.value);
   };
 
   return (
     <div className={props.className}>
-      <form onSubmit={props.handleNameChange} className="option_form">
+      <form onSubmit={handleSubmit} className="option_form">
         <StyledOption
           type="string"
           name="Username:"
-          placeholder={props.username}
+          placeholder={user ? user.username : "Waiting for user..."}
         />
         <StyledOption type="switch" name="Memes:" />
         <StyledOption type="switch" name="Option2:" />

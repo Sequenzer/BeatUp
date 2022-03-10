@@ -1,14 +1,20 @@
 import styled from "styled-components";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { withIronSessionSsr } from "iron-session/next";
 
-import Gear from "./svg/Gear";
-import Settings from "./Settings";
-import { BeatUpLogo } from "./svg/Logo";
+import useUser from "hooks/useUser";
 
-const Navbar = (props) => {
+import Gear from "components/svg/Gear";
+import Settings from "components/Settings";
+import { BeatUpLogo } from "components/svg/Logo";
+
+function Navbar(props) {
   const [logo, punchLogo] = useState(false);
   const [settings, setSettings] = useState(false);
+
+  // Check if user is logged in
+  const { user } = useUser();
 
   return (
     <nav className={props.className}>
@@ -26,12 +32,13 @@ const Navbar = (props) => {
           className="settings_btn"
           onClick={() => setSettings(!settings)}
           activeSettings={settings}
+          username={user ? user.username : "Waiting for username..."}
         />
         {settings && <Settings />}
       </div>
     </nav>
   );
-};
+}
 
 export default styled(Navbar)`
   display: flex;

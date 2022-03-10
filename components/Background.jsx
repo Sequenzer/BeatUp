@@ -1,6 +1,6 @@
 import styled, { keyframes } from "styled-components";
 
-import Wave from "./svg/Wave";
+import Wave from "components/svg/Wave";
 
 var Background = (props) => {
   return (

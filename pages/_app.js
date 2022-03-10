@@ -1,6 +1,15 @@
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { SWRConfig } from "swr";
 
-import Layout from "../components/Layout";
+import Layout from "components/Layout";
+import fetchJson from "lib/fetch";
+
+const swrConfigValue = {
+  fetcher: fetchJson,
+  onError: (err) => {
+    console.error(err);
+  },
+};
 
 const GlobalStyle = createGlobalStyle`
 @font-face {
@@ -76,10 +85,12 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <SWRConfig value={swrConfigValue}>
+          <GlobalStyle />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </SWRConfig>
       </ThemeProvider>
     </>
   );

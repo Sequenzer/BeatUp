@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import Navbar from "../../components/Navbar";
+import Navbar from "components/Navbar";
 
 const Lobby = ({}) => {
   const router = useRouter();

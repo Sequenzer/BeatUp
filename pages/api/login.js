@@ -1,19 +1,14 @@
 import { withIronSessionApiRoute } from "iron-session/next";
+import { sessionOptions } from "lib/session";
 
-const sessionOptions = {
-  cookieName: "_session",
-  password: "Y1BMWvkbFon71UXVHadbvhNiQLafzdJ3",
-  cookieOptions: {
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-    cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
-    },
-  },
-};
-
-export default withIronSessionApiRoute(loginRoute,sessionOptions);
+export default withIronSessionApiRoute(loginRoute, sessionOptions);
 
 async function loginRoute(req, res) {
-    req.session.user = {
-        
-    }
+  //Get the user from the request body
+  const { username } = JSON.parse(await req.body);
+  const user = { isLoggedIn: true, username: username };
+  req.session.user = user;
+  await req.session.save();
+  console.log("User is loggin in as: ", username, JSON.parse(req.body));
+  res.json(user);
+}
