@@ -1,13 +1,57 @@
 import styled, { keyframes } from "styled-components";
+import { useState } from "react";
+import dynamic from "next/dynamic";
 
 import Wave from "components/svg/Wave";
 
+import waveString from "lib/waveString";
+
 var Background = (props) => {
+  let height = 250;
+  let width = 1000;
+  let nOfextrema = 4;
+
+  const [{ wave1, wave2, wave3 }, setWave] = useState({
+    wave1: {
+      start: waveString(height, width, nOfextrema),
+      end: waveString(height, width, nOfextrema),
+    },
+    wave2: {
+      start: waveString(height, width, nOfextrema),
+      end: waveString(height, width, nOfextrema),
+    },
+    wave3: {
+      start: waveString(height, width, nOfextrema),
+      end: waveString(height, width, nOfextrema),
+    },
+  });
+
   return (
     <div className={props.className}>
-      <Wave height={250} width={1000} n={4} className="first" />
-      <Wave height={250} width={1000} n={4} className="second" />
-      <Wave height={250} width={1000} n={4} className="third" />
+      <Wave
+        height={height}
+        width={width}
+        n={nOfextrema}
+        start={wave1.start}
+        end={wave1.end}
+        className="first"
+      />
+      <Wave
+        height={height}
+        width={width}
+        n={nOfextrema}
+        start={wave2.start}
+        end={wave2.end}
+        className="second"
+      />
+      <Wave
+        height={height}
+        width={width}
+        n={nOfextrema}
+        start={wave3.start}
+        end={wave3.end}
+        className="third"
+      />
     </div>
   );
 };
@@ -56,4 +100,6 @@ const styledBackground = styled(Background)`
   }
 `;
 
-export default styledBackground;
+export default dynamic(() => Promise.resolve(styledBackground), {
+  ssr: false,
+});

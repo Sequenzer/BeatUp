@@ -13,9 +13,6 @@ function Navbar(props) {
   const [logo, punchLogo] = useState(false);
   const [settings, setSettings] = useState(false);
 
-  // Check if user is logged in
-  const { user } = useUser();
-
   return (
     <nav className={props.className}>
       <Link href="/" passHref>
@@ -30,9 +27,10 @@ function Navbar(props) {
       <div className="settings">
         <Gear
           className="settings_btn"
-          onClick={() => setSettings(!settings)}
+          onClick={() => {
+            setSettings(!settings);
+          }}
           activeSettings={settings}
-          username={user ? user.username : "Waiting for username..."}
         />
         {settings && <Settings />}
       </div>
