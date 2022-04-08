@@ -248,7 +248,7 @@ function GlobalSettings(props) {
   );
 }
 
-const styledGlobalSettings = styled(GlobalSettings)`
+export default  styled(GlobalSettings)`
   height: 50vh;
   width: 30vw;
   position: absolute;
@@ -275,4 +275,3 @@ const styledGlobalSettings = styled(GlobalSettings)`
   }
 `;
 
-export default styledGlobalSettings;

@@ -76,6 +76,8 @@ const theme = {
     alttitle: "BungeeInline, cursive",
   },
   shadows: {
+    inset:
+      "inset 0px 4px 4px rgba(0, 0, 0, 0.15),inset 0px 2px 2px rgba(0, 0, 0, 0.2), inset 0px 1px 1px rgba(0, 0, 0, 0.25)",
     sharp:
       "0px 1px 1px rgba(0, 0, 0, 0.25), 0px 2px 2px rgba(0, 0, 0, 0.2),0px 4px 4px rgba(0, 0, 0, 0.15), 0px 8px 8px rgba(0, 0, 0, 0.1),0px 16px 16px rgba(0, 0, 0, 0.05)",
   },

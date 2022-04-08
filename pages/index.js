@@ -5,9 +5,13 @@ import { BeatUpLogo as Logo } from "components/svg/Logo";
 
 import { styledBtn as Btn } from "components/Buttons";
 
+import { generateCombination } from "gfycat-style-urls";
+
 function BeatUp(props) {
   // const Code = generateCombination(2, "-");
   const [mainLogo, setMainLogo] = useState(false);
+
+  const lobbyID = generateCombination(2, "-");
 
   return (
     <div className={props.className}>
@@ -21,7 +25,7 @@ function BeatUp(props) {
       <section className="content">
         <h1>Welcome to the game!</h1>
         <div className="btn-list">
-          <Btn href="/">Create Lobby</Btn>
+          <Btn href={`/${lobbyID}/Lobby`}>Create Lobby</Btn>
           <Btn href="/">Browse Games</Btn>
         </div>
       </section>
@@ -29,9 +33,7 @@ function BeatUp(props) {
   );
 }
 
-const styledBeatUp = styled(BeatUp).attrs((props) => ({
-  test: 1,
-}))`
+const styledBeatUp = styled(BeatUp)`
   display: flex;
   flex-direction: column;
   justify-content: center;
